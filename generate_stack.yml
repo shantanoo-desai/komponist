@@ -5,12 +5,34 @@
   - vars/creds.yml
   tasks:
     
-    - name: "[KOMPONIST] Generating Directory for Production-Ready Files"
+    - name: "(KOMPONIST) Generating Directory for Production-Ready Files"
       ansible.builtin.file:
         name: "{{ komponist.deploy_dir }}"
         state: directory
 
-    - name: "[KOMPONIST] Generating Configuration / Compose Files from Templates"
+    - name: "(KOMPONIST) Generating Configuration / Compose Files from Templates"
       include_tasks: "tasks/configure-{{ item }}.yml"
       with_items:
         - "{{ komponist.configuration.keys() }}"
+
+    - name: "(KOMPONIST) Validation and Generation of docker-compose.yml"
+      block:
+        - name: "(DockerCompose) Validating Docker Compose Services"
+          ansible.builtin.shell:
+            cmd: docker compose {{ compose_files }} config --quiet
+          args:
+            chdir: "{{ komponist.deploy_dir }}"
+          vars:
+            compose_files: >-
+              {{ komponist.configuration.keys() | map('regex_replace', '^(.*)$', ' -f docker-compose.\1.yml') | join | trim }}
+          register: docker_compose_validity
+        
+        - name: "(DockerCompose) Generating docker-compose.yml file if all services are valid"
+          ansible.builtin.shell:
+            cmd: docker compose {{ compose_files }} config -o docker-compose.yml
+          args:
+            chdir: "{{ komponist.deploy_dir }}"
+          vars:
+            compose_files: >-
+              {{ komponist.configuration.keys() | map('regex_replace', '^(.*)$', ' -f docker-compose.\1.yml') | join | trim }}
+          when: docker_compose_validity.rc == 0

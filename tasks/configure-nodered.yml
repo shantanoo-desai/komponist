@@ -17,17 +17,17 @@
 
 # configure-nodered.yml: Tasks file that generates the settings and Compose service file
 ---
-- name: '[Node-RED] Creating Deployment Specific Directory'
+- name: '(Node-RED) Creating Deployment Specific Directory'
   ansible.builtin.file:
     name: "{{ komponist.deploy_dir }}/nodered"
     state: directory
  
-- name: '[Node-RED] Generating settings.js File for Deployment'
+- name: '(Node-RED) Generating settings.js File for Deployment'
   ansible.builtin.template:
     src: config/nodered/settings.js.j2
     dest: "{{ komponist.deploy_dir }}/nodered/settings.js"
 
-- name: '[Node-RED] Generating Compose Service File for Deployment'
+- name: '(Node-RED) Generating Compose Service File for Deployment'
   ansible.builtin.template:
     src: services/docker-compose.nodered.yml.j2
     dest: "{{ komponist.deploy_dir }}/docker-compose.nodered.yml"
