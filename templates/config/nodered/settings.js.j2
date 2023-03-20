@@ -1,0 +1,160 @@
+{#- Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>. #}
+{#- Modified settings.js file from node-red project at https://github.com/node-red/node-red 
+ # Licensed with Apache 2.0 License by OpenJS Foundation (https://github.com/node-red/node-red/blob/master/LICENSE) #}
+{#- setting.js.j2: Jinja2 Template for settings.js file required for Node-RED -#}
+
+module.exports = {
+
+    flowFile: 'flows.json',
+
+    /** By default, credentials are encrypted in storage using a generated key. To
+     * specify your own secret, set the following property.
+     * If you want to disable encryption of credentials, set this property to false.
+     * Note: once you set this property, do not change it - doing so will prevent
+     * node-red from being able to decrypt your existing credentials and they will be
+     * lost.
+     */
+    {% if 'credential_secret' in credentials.nodered -%}    
+    credentialSecret: "{{ credentials.nodered.credential_secret }}",
+    {% else -%}
+    // credentialSecret: 'not-set'
+    {% endif %}
+
+    /** By default, the flow JSON will be formatted over multiple lines making
+     * it easier to compare changes when using version control.
+     * To disable pretty-printing of the JSON set the following property to false.
+     */
+    flowFilePretty: true,
+
+     /** To password protect the Node-RED editor and admin API, the following
+     * property can be used. See http://nodered.org/docs/security.html for details.
+     */
+    adminAuth: {
+        type: "credentials",
+        users: [
+            {% if credentials.nodered.users | length %}
+            {%- for nodered_user in credentials.nodered.users -%}
+            
+            {
+                username: "{{ nodered_user.username }}",
+                password: "{{ nodered_user.password | password_hash('blowfish', rounds=8, ident='2b')}}",
+                permissions: "{{ nodered_user.permissions | default('read') }}"
+            },
+
+            {%- endfor %}
+            {% endif %}
+
+        ]
+    },
+
+    /** the tcp port that the Node-RED web server is listening on */
+    uiPort: 1880,
+
+    /** By default, the Node-RED UI is available at http://localhost:1880/
+     * The following property can be used to specify a different root path.
+     * If set to false, this is disabled.
+     */
+    httpAdminRoot: '/nodered',
+    
+     /** Some nodes, such as HTTP In, can be used to listen for incoming http requests.
+     * By default, these are served relative to '/'. The following property
+     * can be used to specify a different root path. If set to false, this is
+     * disabled.
+     */
+    httpNodeRoot: '/nodered',
+
+    /** Configure diagnostics options
+     * - enabled:  When `enabled` is `true` (or unset), diagnostics data will
+     *   be available at http://localhost:1880/diagnostics
+     * - ui: When `ui` is `true` (or unset), the action `show-system-info` will
+     *   be available to logged in users of node-red editor
+    */
+    diagnostics: {
+        /** enable or disable diagnostics endpoint. Must be set to `false` to disable */
+        enabled: true,
+        /** enable or disable diagnostics display in the node-red editor. Must be set to `false` to disable */
+        ui: true,
+    },
+
+    /** Configure runtimeState options
+     * - enabled:  When `enabled` is `true` flows runtime can be Started/Stopped
+     *   by POSTing to available at http://localhost:1880/flows/state
+     * - ui: When `ui` is `true`, the action `core:start-flows` and
+     *   `core:stop-flows` will be available to logged in users of node-red editor
+     *   Also, the deploy menu (when set to default) will show a stop or start button
+     */
+    runtimeState: {
+        /** enable or disable flows/state endpoint. Must be set to `false` to disable */
+        enabled: true,
+        /** show or hide runtime stop/start options in the node-red editor. Must be set to `false` to hide */
+        ui: true,
+    },
+
+    /** The following property can be used to disable the editor. The admin API
+     * is not affected by this option. To disable both the editor and the admin
+     * API, use either the httpRoot or httpAdminRoot properties
+     */
+    disableEditor: {{ komponist.configuration.nodered.disable_editor | default('false') }},
+
+    /** Customising the editor
+     * See https://nodered.org/docs/user-guide/runtime/configuration#editor-themes
+     * for all available options.
+     */
+    editorTheme: {
+        /** To disable the 'Welcome to Node-RED' tour that is displayed the first
+         * time you access the editor for each release of Node-RED, set this to false
+         */
+        tours: false,
+    },
+    
+    logging: {
+        console: {
+            level: "info"
+        },
+    },
+
+    /** Allow the Function node to load additional npm modules directly */
+    functionExternalModules: true,
+
+    /** If you installed the optional node-red-dashboard you can set it's path
+     * relative to httpNodeRoot
+     * Other optional properties include
+     *  readOnly:{boolean},
+     *  middleware:{function or array}, (req,res,next) - http middleware
+     *  ioMiddleware:{function or array}, (socket,next) - socket.io middleware
+     */
+    ui: { path: "ui" },
+
+    /** Colourise the console output of the debug node */
+    debugUseColors: true,
+
+    /** The maximum length, in characters, of any message sent to the debug sidebar tab */
+    debugMaxLength: 1000,
+
+    /** Maximum buffer size for the exec node. Defaults to 10Mb */
+    execMaxBufferSize: 10000000,
+
+    /** Timeout in milliseconds for HTTP request connections. Defaults to 120s */
+    httpRequestTimeout: 120000,
+
+    /** Retry time in milliseconds for MQTT connections */
+    mqttReconnectTime: 15000,
+
+    /** Retry time in milliseconds for Serial port connections */
+    serialReconnectTime: 15000,
+}
