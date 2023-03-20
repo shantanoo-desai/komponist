@@ -1,0 +1,40 @@
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# creds.yml: Main Credentials file to setup the individual Services via Komponist
+
+credentials:
+  nodered:
+    # Parameter: 'credential_secret' (OPTIONAL, but RECOMMENDED)
+    # Function: Fixed key for Encrypting Node Credentials flow_creds.json. 
+    #           Useful when flows need to be imported from Devices and deployed
+    #           to other similar devices
+    # Acceptable Values: strings
+    credential_secret: test
+
+    # Users for Node-RED Editor / core APIs
+    # Type: Arrays of Objects with following parameters defined:
+    #     username: <string>
+    #     password: <string>
+    #     permissions: <string> (Acceptable Values: '*', read). Default Value: read
+    users:
+      - username: admin
+        password: test
+        permissions: '*'
+      - username: ro_user
+        password: test
+        # since no permissions set here, the default permissions are set to 'read'
