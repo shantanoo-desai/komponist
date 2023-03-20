@@ -1,0 +1,55 @@
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# configure-mosquitto.yml: Tasks file that generates the settings and Compose service file
+---
+- name: '(Mosquitto) Creating Deployment Specific Directory'
+  ansible.builtin.file:
+    name: "{{ komponist.deploy_dir }}/mosquitto"
+    state: directory
+ 
+- name: '(Mosquitto) Generating Configuration File for Deployment'
+  ansible.builtin.template:
+    src: "config/mosquitto/mosquitto.conf.j2"
+    dest: "{{ komponist.deploy_dir }}/mosquitto/mosquitto.conf"
+
+- name: '(Mosquitto) Generating Authentication Users File for Deployment'
+  block:
+    - name: Generating Users file (as plain-text)
+      ansible.builtin.template:
+        src: "config/mosquitto/users.j2"
+        dest: "{{ komponist.deploy_dir }}/mosquitto/users"
+
+    - name: Encrypting the Users file using Mosquitto Docker Container
+      community.docker.docker_container:
+        name: mosquitto-passgen
+        image: "eclipse-mosquitto:{{ komponist.configuration.mosquitto.version }}"
+        state: started
+        command: mosquitto_passwd -U /mosquitto/config/users
+        volumes:
+          - "{{ komponist.deploy_dir }}/mosquitto/users:/mosquitto/config/users"
+
+
+- name: '(Mosquitto) Generating Access Control List File for Deployment'
+  ansible.builtin.template:
+    src: "config/mosquitto/acl.j2"
+    dest: "{{ komponist.deploy_dir }}/mosquitto/acl"
+
+- name: '(Mosquitto) Generating Compose Service File for Deployment'
+  ansible.builtin.template:
+    src: services/docker-compose.mosquitto.yml.j2
+    dest: "{{ komponist.deploy_dir }}/docker-compose.mosquitto.yml"
