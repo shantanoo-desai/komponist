@@ -38,3 +38,23 @@ credentials:
       - username: ro_user
         password: test
         # since no permissions set here, the default permissions are set to 'read'
+  
+  mosquitto:
+    # Users for Mosquitto MQTT Broker
+    # Type: Arrays of Objects with following parameters defined:
+    #     username: <string>
+    #     password: <string>
+    #     acl: <Array> of Objects as follows:
+    #       - permissions: <string> Acceptable Value: either `read`, `readwrite`, `write`, `deny`
+    #       - topic: <string> Acceptable Value: your/mqtt/topic (wildcards `+`, and `*` allowed)
+    users:
+      - username: admin
+        password: test
+        acl:
+          - permissions: readwrite
+            topic: "test/readwrite"
+      - username: ro_user
+        password: test
+        acl:
+          - permissions: read
+            topic: "test/readwrite"

@@ -1,0 +1,7 @@
+{%- for user in credentials.mosquitto.users %}
+user {{ user.username }}
+{% for access_list in user.acl %}
+topic {{ access_list.permissions }} {{ access_list.topic }}
+{% endfor %}
+
+{% endfor %}
