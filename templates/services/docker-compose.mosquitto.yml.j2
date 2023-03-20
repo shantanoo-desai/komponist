@@ -1,0 +1,52 @@
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# docker-compose.mosquitto.yml.j2: Jinja2 Template for Mosquitto MQTT Compose Service
+
+services:
+  mosquitto:
+{# Check whether the Image should be pulled from a Public Registry or Internal Registry #}
+{% if 'image' in komponist.configuration.mosquitto %}
+    image: {{ komponist.configuration.mosquitto.image }}:{{ komponist.configuration.mosquito.version }}
+{% else %}
+    image: docker.io/eclipse-mosquitto:{{ configuration.mosquitto.version | default('latest') }}
+{% endif %}
+    container_name: komponist_mosquitto
+    configs:
+      - mosquitto_conf
+      - mosquitto_acl
+      - mosquitto_users
+    user: "1000"
+    entrypoint: mosquitto -c /mosquitto_conf
+    logging:
+      options:
+        max-size: "5m"
+    ports:
+      - "1883:1883"
+    security_opt:
+      - "no-new-privileges:true"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+configs:
+  mosquitto_conf:
+    file: ./mosquitto/mosquitto.conf
+  mosquitto_acl:
+    file: ./mosquitto/acl
+  mosquitto_users:
+    file: ./mosquitto/users

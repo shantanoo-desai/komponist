@@ -43,3 +43,16 @@ komponist:
       # Default Value: false (if not set)
       # Acceptable Values: Boolean values should be strings: either 'true' or 'false'
       disable_editor: 'false'
+    
+    mosquitto:
+      # Parameter: `image` (OPTIONAL)
+      # Function: For Private Image Repositories that are not on DockerHub
+      # Default Value: DockerHub (docker.io)
+      # Acceptable Value: string (URL to your Private Repository including Image Name)
+      # image: <IMAGE_REPO_URL>/<IMAGE_NAME>
+
+      # Parameter: `version` (OPTIONAL)
+      # Function: Docker Image Version to be pulled from an Image Repository
+      # Acceptable Values: string
+      # Default Value: 'latest'
+      version: '2.0.15'
