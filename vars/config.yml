@@ -1,0 +1,45 @@
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# config.yml: Main Configuration file to setup the individual Services via Komponist
+
+komponist:
+  # Parameter: `deploy_dir` (REQUIRED)
+  # Function: Creates a directory in the dedicated path with the generated 
+  #           settings files + docker compose files
+  # Acceptable Value: Complete Path to where the directory should exist
+  deploy_dir: './deploy'
+
+  configuration:
+    nodered:
+      # Parameter: `image` (OPTIONAL)
+      # Function: For Private Image Repositories that are not on DockerHub
+      # Default Value: DockerHub (docker.io)
+      # Acceptable Value: string (URL to your Private Repository including Image Name)
+      # image: <IMAGE_REPO_URL>/<IMAGE_NAME>
+
+      # Parameter: `version` (OPTIONAL)
+      # Function: Docker Image Version to be pulled from an Image Repository
+      # Acceptable Values: string
+      # Default Value: 'latest'
+      version: '3.0.1'
+
+      # Parameter: `disable_editor` (OPTIONAL)
+      # Function: Disable Node-RED Editor
+      # Default Value: false (if not set)
+      # Acceptable Values: Boolean values should be strings: either 'true' or 'false'
+      disable_editor: 'false'
