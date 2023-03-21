@@ -11,6 +11,7 @@ services:
       - traefik_conf.yml
     ports:
       - "80:80"
+      - "1883:1883"
     entrypoint: traefik --configFile /traefik_conf.yml
     labels:
       - "traefik.enable=true"

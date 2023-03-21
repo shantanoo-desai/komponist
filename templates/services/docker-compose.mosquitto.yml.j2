@@ -35,8 +35,12 @@ services:
     logging:
       options:
         max-size: "5m"
-    ports:
-      - "1883:1883"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.mosquitto.entrypoints=mqtt"
+      - "traefik.tcp.routers.mosquitto.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mosquitto.service=mosquitto"
+      - "traefik.tcp.services.mosquitto.loadbalancer.server.port=1883"
     security_opt:
       - "no-new-privileges:true"
     volumes:
