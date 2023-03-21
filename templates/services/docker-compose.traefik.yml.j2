@@ -1,0 +1,27 @@
+services:
+  traefik:
+{# Check whether the Image should be pulled from a Public Registry or Internal Registry #}
+{% if 'image' in komponist.configuration.traefik %}
+    image: {{ komponist.configuration.traefik.image }}:{{ komponist.configuration.traefik.version }}
+{% else %}
+    image: docker.io/traefik:{{ komponist.configuration.traefik.version | default('latest') }}
+{% endif %}
+    container_name: komponist_traefik
+    configs:
+      - traefik_conf.yml
+    ports:
+      - "80:80"
+    entrypoint: traefik --configFile /traefik_conf.yml
+    labels:
+      - "traefik.enable=true"
+    security_opt:
+      - "no-new-privileges:true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./traefik/configurations:/etc/traefik/configurations
+
+configs:
+  traefik_conf.yml:
+    file: ./traefik/traefik.yml

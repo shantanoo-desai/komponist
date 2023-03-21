@@ -33,8 +33,10 @@ services:
     logging:
       options:
         max-size: "5m"
-    ports:
-      - "1880:1880"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nodered-router=nodered-router@file"
+      - "traefik.http.routers.nodered-service=nodered-svc@file"
     security_opt:
       - "no-new-privileges:true"
     volumes:

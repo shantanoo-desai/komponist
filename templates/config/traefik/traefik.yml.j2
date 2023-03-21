@@ -1,0 +1,39 @@
+{#- Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.#}
+{#- traefik.yml.j2: Jinja2 Template for Default Traefik Reverse Proxy -#}
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+log:
+  level: "INFO"
+
+entryPoints:
+  web:
+    address: :80
+  mqtt:
+    address: :1883
+
+providers:
+  docker:
+    endpoint: unix://var/run/docker.sock
+    exposedByDefault: false
+    network: deploy_default # TODO: configurable by config.yml file
+    watch: true
+  file:
+    directory: /etc/traefik/configurations/
+    watch: true
