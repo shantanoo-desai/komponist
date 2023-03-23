@@ -1,0 +1,5 @@
+mosquitto-router:
+  entryPoints:
+    - mqtt
+  service: mosquitto-svc
+  rule: HostSNI(`*`)

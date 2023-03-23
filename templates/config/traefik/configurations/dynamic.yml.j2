@@ -16,36 +16,43 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.#}
 {#- dynamic.yml.j2: Jinja2 Template for Traefik Reverse Proxy Dynamic Configuration -#}
 http:
+  # Routers
   routers:
-{% for config in komponist.configuration.keys() if not config == 'traefik' and not config == 'mosquitto' %}
-    {{ config }}-router:
-      entryPoints:
-        - web
-      service: {{ config }}-svc
-      rule: PathPrefix(`/{{ config }}`)
-{% endfor %}
-
-  services:
-{% for config in komponist.configuration.keys() if not config == 'traefik' and not config == 'mosquitto' %}
-{% if config == 'nodered' %}
 {% filter indent(width=4) %}
-    {% include 'nodered-svc.j2' %}
+    # Node-RED Router
+{% include 'routers-http/nodered-router.j2' %}
+    # InfluxDBv1 Router
+{% include 'routers-http/influxdbv1-router.j2' %}
 {% endfilter %}
-  {%  endif %}
-{% endfor %}
 
+  # Middlewares
+  middlewares:
+{% filter indent(width=4) %}
+    # InfluxDBv1 Middleware
+{% include 'middlewares-http/influxdbv1-mw.j2' %}
+{% endfilter +%}
+
+  # Services
+  services:
+{% filter indent(width=4) %}
+    # Node-RED Service
+{% include 'services-http/nodered-svc.j2'  %}
+    # InfluxDBv1 Service
+{% include 'services-http/influxdbv1-svc.j2' %}
+{% endfilter %}
+
+# TCP Routers, Middlewares, Services
 {% if 'mosquitto' in komponist.configuration.keys() %}
 tcp:
   routers:
-    mosquitto-router:
-      entryPoints:
-        - mqtt
-      service: mosquitto-svc
-      rule: HostSNI(`*`)
+{% filter indent(width=4) %}
+    # Mosquitto Router
+{% include 'routers-tcp/mosquitto-router.j2' %}
+{% endfilter %}
 
   services:
-    mosquitto-svc:
-      loadBalancer:
-        servers:
-          - address: mosquitto:1883
+{% filter indent(width=4) %}
+    # Mosquitto Service
+{% include 'services-tcp/mosquitto-svc.j2' %}
+{% endfilter %}
 {% endif %}
