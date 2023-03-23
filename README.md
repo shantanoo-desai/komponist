@@ -8,7 +8,7 @@ their creation for you. Komponist brings the much needed logic of templating int
 
 ## Requirements
 
-Komponist relies on the _Should of Giants_ to achieve a lot of configuration abstraction. The following are 
+Komponist relies on the _Shoulder of Giants_ to achieve a lot of configuration abstraction. The following are 
 required to make Komponist work:
 
 | Name       | Version    | Purpose                                                           |
@@ -30,6 +30,8 @@ Make sure to install these packages via `pip install <package>` on your host acc
 
 ## Caveats
 
+### Compose v1 vs. Compose v2
+
 Komponist relies on [Docker Compose V2][1] (written in golang) as opposed to the Docker Compose V1
 (which was written in python). 
 
@@ -40,6 +42,15 @@ Komponist relies on [Docker Compose V2][1] (written in golang) as opposed to the
 There is some traction on [`community.docker` collection to integrate Docker Compose V2][2]. If it gets 
 integrated the possible `ansible.builtin.shell` module might be replaced with the respective module in the
 future.
+
+### Generated Paths on Controller Node
+
+Komponist will resolve the relative paths e.g., `./` to absolute path on the machine where Komponist is executed.
+This implies that the `docker-compose.yml` deployed on a remote machine must also have the same paths to the configuration
+file as that on the controller node (where Komponist is executed).
+
+This caveat may be mitigated if one uses a well-known directories like `/usr/share/` or `/etc/` because these paths are
+reflected similarly on the Controller as well as Remote machines
 
 ## Usage
 
@@ -57,6 +68,25 @@ ansible-playbook generate_stack.yml
 This should create a directory called `deploy` (or depending on how you configure `deploy_dir` in `vars/config.yml`) with the 
 configuration / settings / credentials files along with the respective `docker-compose.<service>.yml` files and a __validated__
 `docker-compose.yml`.
+
+### Deployment using Docker Context with Compose
+
+By creating [Contexts][3] to remote devices, the stack can be deployed to remote machines without having to copy the generated
+`docker-compose.yml` file to them.
+
+1. Create an SSH Docker Context using:
+
+    ```bash
+    docker context create <name_of_context> --docker "host=ssh://<user>@<remote-machine_ip or hostname>
+    ```
+2. Copy the generated configurations to the remote machine (see __Caveats__ above in order to avoid filesystem mismatch errors).
+No need to copy the `docker-compose.yml` file
+
+3. Deploy the Compose application using:
+
+    ```bash
+    docker --context=<name_of_context_from_above> compose --project-directory=deploy up -d
+    ```
 
 ### Security: Encrypting Credentials (Recommended)
 
@@ -78,11 +108,12 @@ Currently the following services are available / planned to configure and run:
 
 - [x] __Node-RED__
 - [x] __Mosquitto MQTT Broker__
+- [x] __Traefik Reverse-Proxy + Service Discovery__
 
 ## Contributing / Development
 
 Contributions are welcome for additional services by opening feature requests as Issues. Please report
-bug reports, erroneous behaviours as Issues.
+bugs, erroneous behaviours as Issues.
 
 ### Development
 
@@ -99,3 +130,4 @@ Komponist is licensed under __Affero GNU Public License v3.0__.
 
 [1]: https://docs.docker.com/compose/compose-v2/
 [2]: https://github.com/ansible-collections/community.docker/pull/586
+[3]: https://www.docker.com/blog/how-to-deploy-on-remote-docker-hosts-with-docker-compose/
