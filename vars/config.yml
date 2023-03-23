@@ -18,6 +18,11 @@
 # config.yml: Main Configuration file to setup the individual Services via Komponist
 
 komponist:
+  # Parameter: `project_name` (OPTIONAL)
+  # Function: Provide a Compose Project Name to your stack
+  # Acceptable Value: string
+  # Default Value: komponist
+  project_name: 'komponist'
   # Parameter: `deploy_dir` (REQUIRED)
   # Function: Creates a directory in the dedicated path with the generated 
   #           settings files + docker compose files
