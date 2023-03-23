@@ -9,11 +9,10 @@
     src: config/traefik/traefik.yml.j2
     dest: "{{ komponist.deploy_dir }}/traefik/traefik.yml"
 
-- name: '(Traefik) Copying Configuration Files for Traefik'
-  ansible.builtin.copy:
-    src: templates/config/traefik/configurations/
-    dest: "{{ komponist.deploy_dir }}/traefik/configurations/"
-    remote_src: true
+- name: '(Traefik) Generating Dynamic Configuration Files for Traefik'
+  ansible.builtin.template:
+    src: templates/config/traefik/configurations/dynamic.yml.j2
+    dest: "{{ komponist.deploy_dir }}/traefik/configurations/dynamic.yml"
 
 - name: '(Traefik) Generating Compose Service File for Deployment'
   ansible.builtin.template:

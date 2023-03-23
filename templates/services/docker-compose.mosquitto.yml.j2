@@ -36,11 +36,8 @@ services:
       options:
         max-size: "5m"
     labels:
-      - "traefik.enable=true"
-      - "traefik.tcp.routers.mosquitto.entrypoints=mqtt"
-      - "traefik.tcp.routers.mosquitto.rule=HostSNI(`*`)"
-      - "traefik.tcp.routers.mosquitto.service=mosquitto"
-      - "traefik.tcp.services.mosquitto.loadbalancer.server.port=1883"
+      - "traefik.tcp.routers.mosquitto-router: mosquitto-router@file"
+      - "traefik.tcp.services.mosquitto: mosquitto-svc@file"
     security_opt:
       - "no-new-privileges:true"
     volumes:

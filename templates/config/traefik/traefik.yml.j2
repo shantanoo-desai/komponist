@@ -29,11 +29,6 @@ entryPoints:
     address: :1883
 
 providers:
-  docker:
-    endpoint: unix://var/run/docker.sock
-    exposedByDefault: false
-    network: deploy_default # TODO: configurable by config.yml file
-    watch: true
   file:
     directory: /etc/traefik/configurations/
     watch: true

@@ -34,7 +34,6 @@ services:
       options:
         max-size: "5m"
     labels:
-      - "traefik.enable=true"
       - "traefik.http.routers.nodered-router=nodered-router@file"
       - "traefik.http.routers.nodered-service=nodered-svc@file"
     security_opt:

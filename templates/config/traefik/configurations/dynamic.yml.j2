@@ -1,0 +1,51 @@
+{#- Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.#}
+{#- dynamic.yml.j2: Jinja2 Template for Traefik Reverse Proxy Dynamic Configuration -#}
+http:
+  routers:
+{% for config in komponist.configuration.keys() if not config == 'traefik' and not config == 'mosquitto' %}
+    {{ config }}-router:
+      entryPoints:
+        - web
+      service: {{ config }}-svc
+      rule: PathPrefix(`/{{ config }}`)
+{% endfor %}
+
+  services:
+{% for config in komponist.configuration.keys() if not config == 'traefik' and not config == 'mosquitto' %}
+{% if config == 'nodered' %}
+{% filter indent(width=4) %}
+    {% include 'nodered-svc.j2' %}
+{% endfilter %}
+  {%  endif %}
+{% endfor %}
+
+{% if 'mosquitto' in komponist.configuration.keys() %}
+tcp:
+  routers:
+    mosquitto-router:
+      entryPoints:
+        - mqtt
+      service: mosquitto-svc
+      rule: HostSNI(`*`)
+
+  services:
+    mosquitto-svc:
+      loadBalancer:
+        servers:
+          - address: mosquitto:1883
+{% endif %}
