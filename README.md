@@ -109,6 +109,7 @@ Currently the following services are available / planned to configure and run:
 - [x] __Node-RED__
 - [x] __Mosquitto MQTT Broker__
 - [x] __Traefik Reverse-Proxy + Service Discovery__
+- [x] __InfluxDB v1.x__
 
 ## Contributing / Development
 
