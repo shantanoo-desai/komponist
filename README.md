@@ -8,7 +8,7 @@ their creation for you. Komponist brings the much needed logic of templating int
 
 ## Requirements
 
-Komponist relies on the _Should of Giants_ to achieve a lot of configuration abstraction. The following are 
+Komponist relies on the _Shoulder of Giants_ to achieve a lot of configuration abstraction. The following are 
 required to make Komponist work:
 
 | Name       | Version    | Purpose                                                           |
@@ -78,11 +78,12 @@ Currently the following services are available / planned to configure and run:
 
 - [x] __Node-RED__
 - [x] __Mosquitto MQTT Broker__
+- [x] __Traefik Reverse-Proxy + Service Discovery__
 
 ## Contributing / Development
 
 Contributions are welcome for additional services by opening feature requests as Issues. Please report
-bug reports, erroneous behaviours as Issues.
+bugs, erroneous behaviours as Issues.
 
 ### Development
 
