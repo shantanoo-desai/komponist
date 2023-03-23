@@ -1,0 +1,52 @@
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# docker-compose.influxdbv1.yml.j2: Jinja2 Template for InfluxDBv1 Compose Service
+
+services:
+  influxdbv1:
+{# Check whether the Image should be pulled from a Public Registry or Internal Registry #}
+{% if 'image' in komponist.configuration.influxdbv1 %}
+    image: {{ komponist.configuration.influxdbv1.image }}:{{ komponist.configuration.influxdbv1.version }}
+{% else %}
+    image: docker.io/influxdb:{{ komponist.configuration.influxdbv1.version | default('latest') }}
+{% endif %}
+    container_name: komponist_influxdbv1
+    env_file:
+      - ./influxdbv1/influxdbv1.env
+    environment:
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+      - INFLUXDB_REPORTING_DISABLED=true
+      - INFLUXDB_DATA_QUERY_LOG_ENABLED=false
+      - INFLUXDB_HTTP_LOG_ENABLED=false
+      - INFLUXDB_CONTINUOUS_QUERIES_LOG_ENABLED=false
+    logging:
+      options:
+        max-size: "5m"
+{% if komponist.configuration.influxdbv1.expose_http | default(false) %}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.influxdbv1-router=influxdbv1-router@file"
+      - "traefik.http.routers.influxdbv1-middlewares=influxdbv1-mw@file"
+      - "traefik.http.routers.influxdbv1-service=influxdbv2-svc@file"
+{% else %}
+{% endif %}
+    security_opt:
+      - "no-new-privileges:true"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
