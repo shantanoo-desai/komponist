@@ -58,3 +58,14 @@ credentials:
         acl:
           - permissions: read
             topic: "test/readwrite"
+  
+  influxdbv1:
+    init_database: komponistdb
+    admin_username: admin
+    admin_password: test
+    readwrite_user_username: rw_user
+    readwrite_user_password: test
+    readonly_user_username: ro_user
+    readonly_user_password: test
+    writeonly_user_username: wo_user
+    writeonly_user_password: test

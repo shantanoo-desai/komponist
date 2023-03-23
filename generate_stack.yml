@@ -29,7 +29,7 @@
         
         - name: "(DockerCompose) Generating docker-compose.yml file if all services are valid"
           ansible.builtin.shell:
-            cmd: docker compose {{ compose_files }} config -o docker-compose.yml
+            cmd: docker compose -p {{ komponist.configuration.project_name | default('komponist') }} {{ compose_files }} config -o docker-compose.yml
           args:
             chdir: "{{ komponist.deploy_dir }}"
           vars:
