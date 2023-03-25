@@ -36,8 +36,8 @@ services:
       options:
         max-size: "5m"
     labels:
-      - "traefik.tcp.routers.mosquitto-router: mosquitto-router@file"
-      - "traefik.tcp.services.mosquitto: mosquitto-svc@file"
+      - "traefik.tcp.routers.mosquitto-router=mosquitto-router@file"
+      - "traefik.tcp.services.mosquitto=mosquitto-svc@file"
     security_opt:
       - "no-new-privileges:true"
     volumes:
