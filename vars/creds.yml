@@ -20,7 +20,7 @@
 credentials:
   nodered:
     # Parameter: 'credential_secret' (OPTIONAL, but RECOMMENDED)
-    # Function: Fixed key for Encrypting Node Credentials flow_creds.json. 
+    # Function: Fixed key for Encrypting Node Credentials flow_creds.json.
     #           Useful when flows need to be imported from Devices and deployed
     #           to other similar devices
     # Acceptable Values: strings
@@ -38,7 +38,7 @@ credentials:
       - username: ro_user
         password: test
         # since no permissions set here, the default permissions are set to 'read'
-  
+
   mosquitto:
     # Users for Mosquitto MQTT Broker
     # Type: Arrays of Objects with following parameters defined:
@@ -58,22 +58,64 @@ credentials:
         acl:
           - permissions: read
             topic: "test/readwrite"
-  
+
   influxdbv1:
+    # NOTE: All Configurations are REQUIRED else InfluxDB might
+    #       generate its own credentials which may make the database
+    #       _inaccessible_ post-setup.
+
+    # Parameter: `init_database`
+    # Function: Initial Database Name to be available on setup
+    # Acceptable Value: string
     init_database: komponistdb
+
+    # Parameter: `admin_username` / `admin_password`
+    # Function: Database Admin User Credentials
+    # Acceptable Value: string
     admin_username: admin
     admin_password: test
+
+    # Parameter: `readwrite_user_username` / `readwrite_user_password`
+    # Function: User with READ/WRITE Privileges on `init_database`
+    # Acceptable Value: string
     readwrite_user_username: rw_user
     readwrite_user_password: test
+
+    # Parameter: `readonly_user_username` / `readonly_user_password`
+    # Function: User with READ Privileges on `init_database`
+    # Acceptable Value: string
     readonly_user_username: ro_user
     readonly_user_password: test
+
+    # Parameter: `writeonly_user_username` / `writeonly_user_password`
+    # Function: User with WRITE Privileges on `init_database`
+    # Acceptable Value: string
     writeonly_user_username: wo_user
     writeonly_user_password: test
-  
+
   influxdbv2:
+    # NOTE: All Configurations are REQUIRED else InfluxDB might
+    #       generate its own credentials which may make the database
+    #       _inaccessible_ post-setup.
+
+    # Parameter: `init_org_name`
+    # Function: Initial Organization Name
+    # Acceptable Value: string
     init_org_name: komponistorg
+
+    # Parameter: `init_bucket`
+    # Function: Initial Bucket Name
+    # Acceptable Value: string
     init_bucket: komponistdb
+
+    # Parameter: `init_bucket_retention`
+    # Function: Retentintion Policy for the `init_bucket` if empty, retention is infinite
+    # Acceptable Value: string
     init_bucket_retention: '7d'
+
+    # Parameter: `admin_username` / `admin_password` / `admin_token`
+    # Function: InfluxDBv2 Admin (SuperUser) Credentials
+    # Acceptable Value: string
     admin_username: admin
-    admin_password: testInfluxDBv2
+    admin_password: testInfluxDBv2 # NOTE: this password needs to be long enough else it won't be set
     admin_token: testToken

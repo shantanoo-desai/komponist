@@ -24,7 +24,7 @@ komponist:
   # Default Value: komponist
   project_name: 'komponist'
   # Parameter: `deploy_dir` (REQUIRED)
-  # Function: Creates a directory in the dedicated path with the generated 
+  # Function: Creates a directory in the dedicated path with the generated
   #           settings files + docker compose files
   # Acceptable Value: Complete Path to where the directory should exist
   deploy_dir: './deploy'
@@ -48,7 +48,7 @@ komponist:
       # Default Value: false (if not set)
       # Acceptable Values: Boolean values should be strings: either 'true' or 'false'
       disable_editor: 'false'
-    
+
     mosquitto:
       # Parameter: `image` (OPTIONAL)
       # Function: For Private Image Repositories that are not on DockerHub
@@ -61,7 +61,7 @@ komponist:
       # Acceptable Values: string
       # Default Value: 'latest'
       version: '2.0.15'
-  
+
     traefik:
       # Parameter: `image` (OPTIONAL)
       # Function: For Private Image Repositories that are not on DockerHub
@@ -87,7 +87,7 @@ komponist:
       # Acceptable Values: string
       # Default Value: 'latest'
       version: '1.8-alpine'
-      
+
       # Parameter: `expose_http` (OPTIONAL)
       # Function: expose HTTP API behind reverse-proxy
       # Acceptable Values: Boolean values should be strings: either 'true' or 'false'
