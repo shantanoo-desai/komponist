@@ -42,7 +42,6 @@ services:
       - "traefik.http.routers.influxdbv1-router=influxdbv1-router@file"
       - "traefik.http.routers.influxdbv1-middlewares=influxdbv1-mw@file"
       - "traefik.http.routers.influxdbv1-service=influxdbv2-svc@file"
-{% else %}
 {% endif %}
     security_opt:
       - "no-new-privileges:true"
