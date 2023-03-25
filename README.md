@@ -52,6 +52,13 @@ file as that on the controller node (where Komponist is executed).
 This caveat may be mitigated if one uses a well-known directories like `/usr/share/` or `/etc/` because these paths are
 reflected similarly on the Controller as well as Remote machines
 
+### InfluxDBv2 UI rendering
+
+Since InfluxDBv2's UI does not provide any configuration to render the UI behind a root path, it is not possible to render
+the UI under `/influxdbv2` path. At the moment, it is only possible to view the UI when visiting the following link:
+
+    http://influxdbv2.localhost
+
 ## Usage
 
 Komponist relies on two core configuration files:
@@ -110,20 +117,14 @@ Currently the following services are available / planned to configure and run:
 - [x] __Mosquitto MQTT Broker__
 - [x] __Traefik Reverse-Proxy + Service Discovery__
 - [x] __InfluxDB v1.x__
+- [x] __InfluxDB v2.x__
 
 ## Contributing / Development
 
 Contributions are welcome for additional services by opening feature requests as Issues. Please report
 bugs, erroneous behaviours as Issues.
 
-### Development
-
-1. Start by defining your service's configuration requirements in `vars/config.yml` (see other services for reference)
-2. Define the respective credentials for the services in `vars/creds.yml` (see other services for reference)
-3. Create a dedicated directory under `templates/config/<service>` with your Jinja2 Template that use variables from Steps 1 & 2
-4. Create a Jinja2 template called `docker-compose.<service>.yml.j2` under `templates/services` that use the variables from Step 1
-5. Create an Ansible Tasks file under `tasks/configure-<service>.yml` which converts the templates to dedicated configuration files
-6. Test it out with `ansible-playbook generate_stack.yml`
+If you would like to add your own Services / containers to Komponist, refer to the [Development Workflow Guide][4].
 
 ## Licensing
 
@@ -132,3 +133,4 @@ Komponist is licensed under __Affero GNU Public License v3.0__.
 [1]: https://docs.docker.com/compose/compose-v2/
 [2]: https://github.com/ansible-collections/community.docker/pull/586
 [3]: https://www.docker.com/blog/how-to-deploy-on-remote-docker-hosts-with-docker-compose/
+[4]: docs/Development.md
