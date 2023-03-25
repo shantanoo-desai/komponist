@@ -1,0 +1,15 @@
+---
+- name: '(InfluxDBv2) Creating Deployment Specific Directory'
+  ansible.builtin.file:
+    name: "{{ komponist.deploy_dir }}/influxdbv2"
+    state: directory
+ 
+- name: '(InfluxDBv2) Generating Environment File for Deployment'
+  ansible.builtin.template:
+    src: config/influxdbv2/influxdbv2.env.j2
+    dest: "{{ komponist.deploy_dir }}/influxdbv2/influxdbv2.env"
+
+- name: '(InfluxDBv2) Generating Compose Service File for Deployment'
+  ansible.builtin.template:
+    src: services/docker-compose.influxdbv2.yml.j2
+    dest: "{{ komponist.deploy_dir }}/docker-compose.influxdbv2.yml"

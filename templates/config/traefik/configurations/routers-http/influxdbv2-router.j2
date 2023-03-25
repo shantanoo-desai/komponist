@@ -1,0 +1,7 @@
+influxdbv2-http-router:
+  entryPoints:
+    - web
+  middlewares:
+    - influxdbv2-mw
+  service: influxdbv2-svc
+  rule: PathPrefix(`/influxdbv2`)

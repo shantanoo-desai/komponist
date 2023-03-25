@@ -93,3 +93,28 @@ komponist:
       # Acceptable Values: Boolean values should be strings: either 'true' or 'false'
       # Default Value: false
       expose_http: true
+
+    influxdbv2:
+      # Parameter: `image` (OPTIONAL)
+      # Function: For Private Image Repositories that are not on DockerHub
+      # Default Value: DockerHub (docker.io)
+      # Acceptable Value: string (URL to your Private Repository including Image Name)
+      # image: <IMAGE_REPO_URL>/<IMAGE_NAME>
+
+      # Parameter: `version` (OPTIONAL)
+      # Function: Docker Image Version to be pulled from an Image Repository
+      # Acceptable Values: string
+      # Default Value: 'latest'
+      version: '2.6-alpine'
+
+      # Parameter: `disable_ui` (Optional)
+      # Function: Disable InfluxDBv2 UI NOTE: UI will only be available on localhost
+      #           under `influxdbv2.localhost`
+      # Default Value: false (UI is available)
+      disable_ui: false
+
+      # Parameter: `expose_http` (OPTIONAL)
+      # Function: expose HTTP API behind reverse-proxy
+      # Acceptable Values: Boolean
+      # Default Value: false
+      expose_http: true

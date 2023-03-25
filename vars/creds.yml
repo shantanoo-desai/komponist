@@ -69,3 +69,11 @@ credentials:
     readonly_user_password: test
     writeonly_user_username: wo_user
     writeonly_user_password: test
+  
+  influxdbv2:
+    init_org_name: komponistorg
+    init_bucket: komponistdb
+    init_bucket_retention: '7d'
+    admin_username: admin
+    admin_password: testInfluxDBv2
+    admin_token: testToken

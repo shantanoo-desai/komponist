@@ -21,9 +21,20 @@ http:
 {% filter indent(width=4) %}
     # Node-RED Router
 {% include 'routers-http/nodered-router.j2' %}
+
 {% if komponist.configuration.influxdbv1.expose_http | default(false) %}
-    # InfluxDBv1 Router
+# InfluxDBv1 Router
 {% include 'routers-http/influxdbv1-router.j2' %}
+{% endif %}
+
+{% if komponist.configuration.influxdbv2.expose_http | default(false) %}
+# InfluxDBv2 HTTP API router
+{% include 'routers-http/influxdbv2-router.j2' %}
+{% endif %}
+
+{% if not komponist.configuration.influxdbv2.disable_ui | default(false) %}
+# InfluxDBv2 UI router
+{% include 'routers-http/influxdbv2-ui-router.j2' %}
 {% endif %}
 {% endfilter %}
 
@@ -32,6 +43,8 @@ http:
 {% filter indent(width=4) %}
     # InfluxDBv1 Middleware
 {% include 'middlewares-http/influxdbv1-mw.j2' %}
+# InfluxDBv2 Middleware
+{% include 'middlewares-http/influxdbv2-mw.j2' %}
 {% endfilter +%}
 
   # Services
@@ -39,8 +52,10 @@ http:
 {% filter indent(width=4) %}
     # Node-RED Service
 {% include 'services-http/nodered-svc.j2'  %}
-    # InfluxDBv1 Service
+# InfluxDBv1 Service
 {% include 'services-http/influxdbv1-svc.j2' %}
+# InfluxDBv2 Service
+{% include 'services-http/influxdbv2-svc.j2' %}
 {% endfilter %}
 
 # TCP Routers, Middlewares, Services
@@ -48,13 +63,13 @@ http:
 tcp:
   routers:
 {% filter indent(width=4) %}
-    # Mosquitto Router
+# Mosquitto Router
 {% include 'routers-tcp/mosquitto-router.j2' %}
 {% endfilter %}
 
   services:
 {% filter indent(width=4) %}
-    # Mosquitto Service
+# Mosquitto Service
 {% include 'services-tcp/mosquitto-svc.j2' %}
 {% endfilter %}
 {% endif %}
