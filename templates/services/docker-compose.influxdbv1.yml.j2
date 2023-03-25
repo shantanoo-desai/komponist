@@ -39,7 +39,6 @@ services:
         max-size: "5m"
 {% if komponist.configuration.influxdbv1.expose_http | default(false) %}
     labels:
-      - "traefik.enable=true"
       - "traefik.http.routers.influxdbv1-router=influxdbv1-router@file"
       - "traefik.http.routers.influxdbv1-middlewares=influxdbv1-mw@file"
       - "traefik.http.routers.influxdbv1-service=influxdbv2-svc@file"

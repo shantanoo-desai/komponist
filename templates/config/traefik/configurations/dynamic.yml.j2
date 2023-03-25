@@ -21,8 +21,10 @@ http:
 {% filter indent(width=4) %}
     # Node-RED Router
 {% include 'routers-http/nodered-router.j2' %}
+{% if komponist.configuration.influxdbv1.expose_http | default(false) %}
     # InfluxDBv1 Router
 {% include 'routers-http/influxdbv1-router.j2' %}
+{% endif %}
 {% endfilter %}
 
   # Middlewares
