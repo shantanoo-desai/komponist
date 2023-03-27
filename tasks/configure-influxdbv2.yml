@@ -21,16 +21,16 @@
   ansible.builtin.file:
     name: "{{ komponist.deploy_dir }}/influxdbv2"
     state: directory
-    mode: 0755
+    mode: "0755"
 
 - name: '(InfluxDBv2) Generating Environment File for Deployment'
   ansible.builtin.template:
     src: config/influxdbv2/influxdbv2.env.j2
     dest: "{{ komponist.deploy_dir }}/influxdbv2/influxdbv2.env"
-    mode: 0755
+    mode: "0755"
 
 - name: '(InfluxDBv2) Generating Compose Service File for Deployment'
   ansible.builtin.template:
     src: services/docker-compose.influxdbv2.yml.j2
     dest: "{{ komponist.deploy_dir }}/docker-compose.influxdbv2.yml"
-    mode: 0755
+    mode: "0755"

@@ -21,16 +21,16 @@
   ansible.builtin.file:
     name: "{{ komponist.deploy_dir }}/nodered"
     state: directory
-    mode: 0755
+    mode: "0755"
 
 - name: '(Node-RED) Generating settings.js File for Deployment'
   ansible.builtin.template:
     src: config/nodered/settings.js.j2
     dest: "{{ komponist.deploy_dir }}/nodered/settings.js"
-    mode: 0755
+    mode: "0755"
 
 - name: '(Node-RED) Generating Compose Service File for Deployment'
   ansible.builtin.template:
     src: services/docker-compose.nodered.yml.j2
     dest: "{{ komponist.deploy_dir }}/docker-compose.nodered.yml"
-    mode: 0755
+    mode: "0755"
