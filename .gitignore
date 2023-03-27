@@ -1,5 +1,2 @@
 # Ignore deploy directory
 deploy/
-
-# Ignore VS-Code Settings
-.vscode/
