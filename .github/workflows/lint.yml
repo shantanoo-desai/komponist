@@ -1,0 +1,19 @@
+---
+name: Ansible Lint
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Lint Ansible Playbooks / Tasks
+        uses: ansible/ansible-lint-action@v6
+        with:
+          path: "./"
