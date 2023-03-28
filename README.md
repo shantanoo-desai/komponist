@@ -118,6 +118,7 @@ Currently the following services are available / planned to configure and run:
 - [x] __Traefik Reverse-Proxy + Service Discovery__
 - [x] __InfluxDB v1.x__
 - [x] __InfluxDB v2.x__
+- [x] __Grafana v9.x.__
 
 ## Contributing / Development
 
