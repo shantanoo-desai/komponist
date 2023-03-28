@@ -1,0 +1,51 @@
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# configure-grafana.yml: Tasks file that generates the settings and Compose service file for Grafana
+---
+- name: '(Grafana) Creating Deployment Specific Directory'
+  ansible.builtin.file:
+    name: "{{ komponist.deploy_dir }}/grafana/provisioning/datasources"
+    state: directory
+    mode: "0755"
+
+- name: '(Grafana) Adding Environment Variables for Deployment'
+  block:
+    - name: Creating `.env` file if it doesn't exist
+      ansible.builtin.file:
+        path: "{{ komponist.deploy_dir }}/.env"
+        state: touch
+        mode: "0755"
+
+    - name: '(Grafana) Insert Grafana Credentials'
+      ansible.builtin.blockinfile:
+        path: "{{ komponist.deploy_dir }}/.env"
+        block: |
+          GRAFANA_ADMIN_USERNAME={{ credentials.grafana.admin_username }}
+          GRAFANA_ADMIN_PASSWORD={{ credentials.grafana.admin_password }}
+
+- name: '(Grafana) Generating Datasources File'
+  ansible.builtin.template:
+    src: config/grafana/provisioning/datasources/datasources.yml.j2
+    dest: "{{ komponist.deploy_dir }}/grafana/provisioning/datasources/datasources.yml"
+    mode: "0755"
+
+- name: '(Grafana) Generating Compose Service File for Deployment'
+  ansible.builtin.template:
+    src: services/docker-compose.grafana.yml.j2
+    dest: "{{ komponist.deploy_dir }}/docker-compose.grafana.yml"
+    mode: "0755"

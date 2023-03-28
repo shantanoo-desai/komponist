@@ -1,0 +1,5 @@
+grafana-router:
+  entryPoints:
+    - web
+  service: grafana-svc
+  rule: PathPrefix(`/grafana`)

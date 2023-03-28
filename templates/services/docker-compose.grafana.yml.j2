@@ -1,0 +1,56 @@
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# docker-compose.grafana.yml.j2: Jinja2 Template for Grafana Compose Service
+
+services:
+  grafana:
+{# Check whether the Image should be pulled from a Public Registry or Internal Registry #}
+{% if 'image' in komponist.configuration.grafana %}
+    image: {{ komponist.configuration.grafana.image }}:{{ komponist.configuration.grafana.version }}
+{% else %}
+    image: docker.io/grafana/grafana-oss:{{ komponist.configuration.grafana.version | default('latest') }}
+{% endif %}
+    container_name: komponist_grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER__FILE=/run/secrets/grafana_admin_username
+      - GF_SECURITY_ADMIN_PASSWORD__FILE=/run/secrets/grafana_admin_password
+      - GF_SERVER_ROOT_URL=/grafana
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    secrets:
+      - grafana_admin_username
+      - grafana_admin_password
+    logging:
+      options:
+        max-size: "5m"
+    labels:
+      - "traefik.http.routers.grafana-router=grafana-router@file"
+      - "traefik.http.routers.grafana-middlewares=grafana-mw@file"
+      - "traefik.http.routers.grafana-service=grafana-svc@file"
+    security_opt:
+      - "no-new-privileges:true"
+    user: "1000"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+
+secrets:
+    grafana_admin_username:
+      environment: GRAFANA_ADMIN_USERNAME
+    grafana_admin_password:
+      environment: GRAFANA_ADMIN_PASSWORD

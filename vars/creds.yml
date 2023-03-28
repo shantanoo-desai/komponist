@@ -119,3 +119,7 @@ credentials:
     admin_username: admin
     admin_password: testInfluxDBv2 # NOTE: this password needs to be long enough else it won't be set
     admin_token: testToken
+
+  grafana:
+    admin_username: admin
+    admin_password: komponistTest

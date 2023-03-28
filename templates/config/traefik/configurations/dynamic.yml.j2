@@ -22,6 +22,9 @@ http:
     # Node-RED Router
 {% include 'routers-http/nodered-router.j2' %}
 
+    # Grafana-Router
+{% include 'routers-http/grafana-router.j2' %}
+
 {% if komponist.configuration.influxdbv1.expose_http | default(false) %}
 # InfluxDBv1 Router
 {% include 'routers-http/influxdbv1-router.j2' %}
@@ -46,6 +49,9 @@ http:
 
 # InfluxDBv2 Middleware
 {% include 'middlewares-http/influxdbv2-mw.j2' %}
+
+# Grafana Middleware
+{% include 'middlewares-http/grafana-mw.j2' %}
 {% endfilter +%}
 
   # Services
@@ -53,6 +59,9 @@ http:
 {% filter indent(width=4) %}
     # Node-RED Service
 {% include 'services-http/nodered-svc.j2'  %}
+
+    # Grafana Service
+{% include 'services-http/grafana-svc.j2' %}
 
 # InfluxDBv1 Service
 {% include 'services-http/influxdbv1-svc.j2' %}
