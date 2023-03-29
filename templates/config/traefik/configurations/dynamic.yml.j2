@@ -1,4 +1,4 @@
-{#- Komponist - Generate Your Favourite Compose Stack With the Least Effort
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
 #
 # Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
 #
@@ -13,8 +13,12 @@
 #   GNU Affero General Public License for more details.
 #
 #   You should have received a copy of the GNU Affero General Public License
-#   along with this program.  If not, see <https://www.gnu.org/licenses/>.#}
-{#- dynamic.yml.j2: Jinja2 Template for Traefik Reverse Proxy Dynamic Configuration -#}
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+{{ ansible_managed | comment }}
+
+{# dynamic.yml.j2: Jinja2 Template for Traefik Reverse Proxy Dynamic Configuration #}
+
 http:
   # Routers
   routers:

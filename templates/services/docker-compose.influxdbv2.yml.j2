@@ -15,7 +15,9 @@
 #   You should have received a copy of the GNU Affero General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# docker-compose.influxdbv2.yml.j2: Jinja2 Template for InfluxDBv2 Compose Service
+{{ ansible_managed | comment }}
+
+{# docker-compose.influxdbv2.yml.j2: Jinja2 Template for InfluxDBv2 Compose Service #}
 
 services:
   influxdbv2:

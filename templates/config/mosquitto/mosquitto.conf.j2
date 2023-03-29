@@ -1,4 +1,4 @@
-{#- Komponist - Generate Your Favourite Compose Stack With the Least Effort
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
 #
 # Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
 #
@@ -13,8 +13,11 @@
 #   GNU Affero General Public License for more details.
 #
 #   You should have received a copy of the GNU Affero General Public License
-#   along with this program.  If not, see <https://www.gnu.org/licenses/>. #}
-{#- mosquitto.conf.j2: Jinja2 Template for mosquitto.conf file required for Mosquitto MQTT Broker -#}
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>. #
+
+{{ ansible_managed | comment }}
+
+{# mosquitto.conf.j2: Jinja2 Template for mosquitto.conf file required for Mosquitto MQTT Broker #}
 
 # MQTT Port Listener
 listener    1883

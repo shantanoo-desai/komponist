@@ -16,9 +16,3 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 {{ ansible_managed | comment }}
-
-{# users.j2: Jinja2 Template for Mosquitto Authentication #}
-
-{%- for user in credentials.mosquitto.users %}
-{{ user.username }}:{{ user.password }}
-{% endfor %}
