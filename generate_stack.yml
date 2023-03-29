@@ -64,3 +64,9 @@
             path: "{{ komponist.deploy_dir }}/docker-compose.yml"
             insertbefore: "BOF"
             marker: ""
+
+        - name: "(KOMPONIST) Generating the .env file for the Project"
+          ansible.builtin.template:
+            src: config/komponist.env.j2
+            dest: "{{ komponist.deploy_dir }}/.env"
+            mode: "0755"
