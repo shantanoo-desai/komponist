@@ -1,0 +1,53 @@
+---
+- name: File Generation Tests
+  vars_files:
+    - "{{ playbook_dir }}/../vars/config.yml"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Check for .env File in deploy_dir
+      block:
+        - name: Get stats for .env in deploy_dir
+          ansible.builtin.stat:
+            path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/.env"
+          register: test_compose_env_file_stat
+
+        - name: Check if .env file is generated
+          ansible.builtin.assert:
+            that: test_compose_env_file_stat.stat.exists and test_compose_env_file_stat.stat.mode == "0755"
+            fail_msg: "FAIL: .env File DOES NOT exist in {{ komponist.deploy_dir }} directory."
+            success_msg: "PASS: .env File exists in {{ komponist.deploy_dir }} directory."
+
+    - name: Check for Generated Docker Compose Services Files
+      block:
+        - name: Get stats for configured Docker Compose services
+          ansible.builtin.stat:
+            path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/docker-compose.{{ item }}.yml"
+          loop: "{{ komponist.configuration.keys() }}"
+          register: test_compose_services_files_stat
+
+        - name: Check if respective Docker Compose Service Files exist
+          ansible.builtin.assert:
+            that: item.stat.exists and item.stat.mode
+            fail_msg: "FAIL: docker-compose.{{ item.item }}.yml DOES NOT exist in {{ komponist.deploy_dir }} directory."
+            success_msg: "PASS: docker-compose.{{ item.item }}.yml File exists in {{ komponist.deploy_dir }} directory."
+          loop: "{{ test_compose_services_files_stat.results | map('ansible.utils.keep_keys', [ 'item', 'exists', 'mode']) }}"
+          loop_control:
+            label: "{{ item.item }}"
+
+    - name: Check for Deployment-Ready docker-compose.yml File
+      block:
+        - name: Get stats for Deployment-Ready docker-compose.yml file
+          ansible.builtin.stat:
+            path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/docker-compose.yml"
+          register: test_compose_deployment_file_stat
+
+        - name: Check if docker-compose.yml File exist
+          ansible.builtin.assert:
+            that: test_compose_deployment_file_stat.stat.exists and test_compose_deployment_file_stat.stat.mode == '0644'
+            fail_msg: "FAIL: docker-compose.yml DOES NOT exist in {{ komponist.deploy_dir }} directory."
+            success_msg: "PASS: docker-compose.yml File exists in {{ komponist.deploy_dir }} directory."
+
+    - name: Check InfluxDB V1 Generated Files in deploy_dir
+      include_tasks: "{{ playbook_dir }}/services/test_config_influxdb.yml"
+      with_items: "{{ komponist.configuration.keys () | select( 'match', 'influxdbv[1-2]') | list }}"
