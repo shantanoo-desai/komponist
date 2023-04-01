@@ -55,3 +55,7 @@
     - name: Check Mosquitto MQTT Generated Files in deploy_dir
       ansible.builtin.include_tasks: "{{ playbook_dir }}/services/test_config_mosquitto.yml"
       when: "'mosquitto' in komponist.configuration.keys()"
+
+    - name: Check Grafana Generated Files in deploy_dir
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/services/test_config_grafana.yml"
+      when: "'grafana' in komponist.configuration.keys() and ('influxdbv1' in komponist.configuration.keys() or 'influxdbv2' in komponist.configuration.keys())"
