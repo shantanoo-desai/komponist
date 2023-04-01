@@ -1,0 +1,36 @@
+---
+- name: Directory Structure Creation Tests
+  vars_files:
+    - "{{ playbook_dir }}/../vars/config.yml"
+  hosts: localhost
+  gather_facts: false
+
+  pre_tasks:
+    - name: Collect Stat Information for deploy_dir
+      ansible.builtin.stat:
+        path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}"
+      register: test_deploy_dir_state
+
+    - name: Collect Stat Information for Services under deploy_dir
+      ansible.builtin.stat:
+        path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/{{ item }}"
+      register: test_deploy_dir_service_state
+      loop: "{{ komponist.configuration.keys() }}"
+
+  tasks:
+    - name: Test if deploy_dir directory is created
+      ansible.builtin.assert:
+        that:
+          - test_deploy_dir_state.stat.exists and test_deploy_dir_state.stat.isdir
+        fail_msg: "Cannot Find the {{ komponist.deploy_dir }} in the root of the repository."
+        success_msg: "{{ komponist.deploy_dir }} exists in the root of the repository."
+
+    - name: Test if the subdirectories for each Service exists under deploy_dir
+      ansible.builtin.assert:
+        that: item.stat.exists and item.stat.isdir and item.stat.mode == '0755'
+        fail_msg: "FAIL: {{ item.item }} does not exist under {{ komponist.deploy_dir }} directory"
+        success_msg: "PASS: {{ item.item }} exist under {{ komponist.deploy_dir }} directory"
+        quiet: false
+      loop: "{{ test_deploy_dir_service_state.results | map('ansible.utils.keep_keys', ['item', 'exists', 'isdir', 'mode']) }}"
+      loop_control:
+        label: "{{ item.item }}"
