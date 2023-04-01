@@ -44,6 +44,7 @@
         user: "1000"
         state: started
         command: mosquitto_passwd -U /mosquitto/config/users
+        pull: true
         volumes:
           - "{{ komponist.deploy_dir }}/mosquitto/users:/mosquitto/config/users"
 
