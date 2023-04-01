@@ -25,6 +25,9 @@ jobs:
       - name: Checkout Codebase
         uses: actions/checkout@v3
       
+      - name: Pull eclipse-mosquitto image
+        run: docker pull eclipse-mosquitto:2.0.15
+
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -34,7 +37,7 @@ jobs:
         run: python -m pip install ansible docker passlib
       
       - name: Generate the Default Komponist Stack
-        run: ansible-playbook generate_stack.yml
+        run: ansible-playbook -vv generate_stack.yml
       
       - name: Test Integrity of Generated Directories
         run: ansible-playbook tests/test_generated_directories.yml
