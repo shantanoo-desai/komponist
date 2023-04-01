@@ -8,4 +8,4 @@
   ansible.builtin.assert:
     that: test_nodered_settings_file_stat.stat.exists and test_nodered_settings_file_stat.stat.mode == '0755'
     fail_msg: "FAIL: settings.js DOES NOT exist under {{ komponist.deploy_dir }}/nodered directory"
-    success_msg: "SUCESS: settings.js exists under {{ komponist.deploy_dir }}/nodered directory"
+    success_msg: "PASS: settings.js exists under {{ komponist.deploy_dir }}/nodered directory"
