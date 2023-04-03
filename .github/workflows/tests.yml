@@ -44,3 +44,6 @@ jobs:
       
       - name: Test Integrity of Generated Files
         run: ansible-playbook tests/test_generated_files.yml
+
+      - name: Test Schema Validation Checks for Generated Files
+        run: ansible-playbook tests/test_schemas.yml
