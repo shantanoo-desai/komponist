@@ -6,7 +6,7 @@
   gather_facts: false
   tasks:
     - name: JSON Schema Validation Checks for Compose Services and compose files
-      include_tasks: "{{ playbook_dir }}/services/test_compose_schema.yml"
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/services/test_compose_schema.yml"
       with_fileglob:
         - "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/*.yml"
 

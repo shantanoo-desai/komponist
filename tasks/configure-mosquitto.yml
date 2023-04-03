@@ -41,7 +41,6 @@
       community.docker.docker_container:
         name: mosquitto-passgen
         image: "eclipse-mosquitto:{{ komponist.configuration.mosquitto.version }}"
-        user: "1000"
         state: started
         command: mosquitto_passwd -U /mosquitto/config/users
         pull: true
