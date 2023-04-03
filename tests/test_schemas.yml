@@ -1,0 +1,45 @@
+---
+- name: JSON / YAML Schema Validation for Generated Files
+  hosts: localhost
+  vars_files:
+    - "{{ playbook_dir }}/../vars/config.yml"
+  gather_facts: false
+  tasks:
+    - name: JSON Schema Validation Checks for Compose Services and compose files
+      include_tasks: "{{ playbook_dir }}/services/test_compose_schema.yml"
+      with_fileglob:
+        - "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/*.yml"
+
+    - name: JSON Schema Validation Checks for Traefik related files
+      block:
+        - name: Perform Lookup for Traefik Static Configuration File
+          ansible.builtin.set_fact:
+            traefik_static_conf: "{{ lookup('ansible.builtin.file', '{{ playbook_dir }}/../{{ komponist.deploy_dir }}/traefik/traefik.yml') | from_yaml }}"
+            traefik_static_schema: "{{ lookup('ansible.builtin.file', '{{ playbook_dir }}/schemas/traefik-v2.json') }}"
+
+        - name: Perform Validation for Traefik Static Configuration JSONSchema
+          ansible.builtin.set_fact:
+            traefik_static_schema_checks: "{{ lookup('ansible.utils.validate', traefik_static_conf, traefik_static_schema) }}"
+
+        - name: Assert that Validation for Traefik Static File is successful for JSONSchema
+          ansible.builtin.assert:
+            that: "{{ traefik_static_schema_checks | length == 0 }}"
+            fail_msg: "FAIL: Schema for {{ komponist.deploy_dir }}/traefik/traefik.yml does not match the traefik-v2.json"
+            success_msg: "PASS: Schema for {{ komponist.deploy_dir }}/traefik/traefik.yml matches the traefik-v2.json"
+
+        - name: Perform Lookup for Traefik Dynamic Configuration File
+          ansible.builtin.set_fact:
+            traefik_dynamic_conf: "{{ lookup('ansible.builtin.file', '{{ playbook_dir }}/../{{ komponist.deploy_dir }}/{{ dyn_file }}') | from_yaml }}"
+            traefik_dynamic_schema: "{{ lookup('ansible.builtin.file', '{{ playbook_dir }}/schemas/traefik-v2-file-provider.json') }}"
+          vars:
+            dyn_file: traefik/configurations/dynamic.yml
+
+        - name: Perform Validation for Traefik Dynamic Configuration JSONSchema
+          ansible.builtin.set_fact:
+            traefik_dynamic_schema_checks: "{{ lookup('ansible.utils.validate', traefik_static_conf, traefik_static_schema) }}"
+
+        - name: Assert that Validation for Traefik Dynamic File is successful for JSONSchema
+          ansible.builtin.assert:
+            that: "{{ traefik_dynamic_schema_checks | length == 0 }}"
+            fail_msg: "FAIL: Schema for {{ komponist.deploy_dir }}/traefik/configurations/dynamic.yml does not match the traefik-v2-file-provider.json"
+            success_msg: "PASS: Schema for {{ komponist.deploy_dir }}/traefik/configurations/dynamic.yml matches the traefik-v2-file-provider.json"
