@@ -1,0 +1,30 @@
+---
+- name: Test Content for Mosquitto / Node-RED Generated Files
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../vars/config.yml"
+  tasks:
+    - name: (Mosquitto) Perform Lookup for Mosquitto Users File
+      ansible.builtin.set_fact:
+        mosquitto_users_file: "{{ lookup('ansible.builtin.file', '{{ playbook_dir }}/../{{ komponist.deploy_dir }}/mosquitto/users') }}"
+
+    - name: (Mosquitto) Assert that plain-text passwords were encrypted by Docker Container mosquitto-passgen
+      ansible.builtin.assert:
+        that: "{{ mosquitto_users_file | regex_findall(sequence) | count > 0 }}"
+        fail_msg: "FAIL: Docker Container DID NOT encrypt the plain-text passwords for Mosquitto Users file."
+        success_msg: "PASS: Docker Container did encyrpt the plain-text passwords for Mosquitto Users file."
+      vars:
+        sequence: ':\$7\$101\$'
+
+    - name: (Node-RED) Perform Lookup for Node-RED settings.js file
+      ansible.builtin.set_fact:
+        nodered_settings_file: "{{ lookup('ansible.builtin.file', '{{ playbook_dir }}/../{{ komponist.deploy_dir }}/nodered/settings.js') }}"
+
+    - name: (Node-RED) Assert that Generated passwords for Node-RED are encrypted
+      ansible.builtin.assert:
+        that: "{{ nodered_settings_file | regex_findall(sequence) | count > 0 }}"
+        fail_msg: "FAIL: Jinja2 filter DID NOT encrypt the plain-text passwords for Node-RED settings file."
+        success_msg: "PASS: Jinja2 filter did encyrpt the plain-text passwords for Node-RED settings file."
+      vars:
+        sequence: '\$2b\$08\$'
