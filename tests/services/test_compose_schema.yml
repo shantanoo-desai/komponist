@@ -1,0 +1,14 @@
+- name: Perform Lookup for {{ item }} File
+  ansible.builtin.set_fact:
+    compose_service_file: "{{ lookup('ansible.builtin.file', '{{ item }}') | from_yaml }}"
+    compose_spec_schema: "{{ lookup('ansible.builtin.file', '{{ playbook_dir }}/schemas/compose-spec.json') }}"
+
+- name: Perform Validation for Compose File with compose-spec JSONSchema
+  ansible.builtin.set_fact:
+    data_criteria_checks: "{{ lookup('ansible.utils.validate', compose_service_file , compose_spec_schema) }}"
+
+- name: Assert that Validation is successful for JSONSchema
+  ansible.builtin.assert:
+    that: "{{ data_criteria_checks | length == 0 }}"
+    fail_msg: "FAIL: Schema for {{ item }} does not match the compose-spec.json"
+    success_msg: "PASS: Schema for {{ item }} matches the compose-spec.json"
