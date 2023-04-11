@@ -27,7 +27,6 @@ services:
     image: docker.io/influxdb:{{ komponist.configuration.influxdbv2.version | default('latest') }}
 {% endif %}
     container_name: komponist_influxdbv2
-    user: "1000"
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_ORG={{ credentials.influxdbv2.init_org_name }}
@@ -52,6 +51,7 @@ services:
       - influxdbv2_admin_token
     security_opt:
       - "no-new-privileges:true"
+    user: "{{ komponist.uid | default(ansible_user_uid) }}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
