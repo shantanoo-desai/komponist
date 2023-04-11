@@ -1,4 +1,4 @@
-# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+{#- Komponist - Generate Your Favourite Compose Stack With the Least Effort
 #
 # Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
 #
@@ -13,30 +13,32 @@
 #   GNU Affero General Public License for more details.
 #
 #   You should have received a copy of the GNU Affero General Public License
-#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.-#}
 
-{{ ansible_managed | comment }}
 
-{# datasources.yml.j2: Jinja2 Template for Grafana Datasources YAML file #}
+{#- datasources.yml.j2: Jinja2 Template for Grafana Datasources YAML file -#}
 
 apiVersion: 1
 
+deleteDataSources:
+
 datasources:
 {% if 'influxdbv1' in komponist.configuration.keys() %}
-  - name: Komponist InfluxDBv1 Datasource
+  - name: Komponist-InfluxDBv1
     type: influxdb
-    database: {{ credentials.influxdbv1.init_database }}
     access: proxy
+    database: {{ credentials.influxdbv1.init_database }}
     user: {{ credentials.influxdbv1.readwrite_user_username }}
     url: http://komponist_influxdbv1:8086
     jsonData:
       httpMode: GET
     secureJsonData:
       password: {{ credentials.influxdbv1.readwrite_user_password }}
+    editable: true
 {% endif %}
 
 {% if 'influxdbv2' in komponist.configuration.keys() %}
-  - name: Komponist InfluxDBv2 Datasource
+  - name: Komponist-InfluxDBv2
     type: influxdb
     access: proxy
     url: http://komponist_influxdbv2:8087
@@ -47,4 +49,5 @@ datasources:
       tlsSkipVerify: true
     secureJsonData:
       token: {{ credentials.influxdbv2.admin_token }}
+    editable: true
 {% endif %}
