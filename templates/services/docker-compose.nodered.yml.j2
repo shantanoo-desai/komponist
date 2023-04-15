@@ -30,7 +30,6 @@ services:
     container_name: komponist_nodered
     configs:
       - nodered_settings
-    user: "1000"
     entrypoint: node-red -s /nodered_settings
     logging:
       options:
@@ -40,6 +39,7 @@ services:
       - "traefik.http.routers.nodered-service=nodered-svc@file"
     security_opt:
       - "no-new-privileges:true"
+    user: "{{ komponist.uid | default(ansible_user_uid) }}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro

@@ -28,6 +28,13 @@ komponist:
   #           settings files + docker compose files
   # Acceptable Value: Complete Path to where the directory should exist
   deploy_dir: './deploy'
+  # Parameter: `uid` (OPTIONAL)
+  # Function: Use the user id of the host's user and avoid using `root`
+  #           within containers. This is also useful for containers that use
+  #           Docker Secrets
+  # Acceptable Value: pass value of `id -u` in terminal here
+  # Default Value: the uid of the current user set via `ansible_user_uid` variable
+  # uid: 1000
 
   configuration:
     nodered:
@@ -130,4 +137,4 @@ komponist:
       # Function: Docker Image Version to be pulled from an Image Repository
       # Acceptable Values: string
       # Default Value: 'latest'
-      version: '9.4.7'
+      version: '9.3.11'
