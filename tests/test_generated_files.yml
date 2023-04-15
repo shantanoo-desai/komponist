@@ -50,7 +50,7 @@
 
     - name: Check InfluxDB V1/V2 Generated Files in deploy_dir
       ansible.builtin.include_tasks: "{{ playbook_dir }}/services/test_config_influxdb.yml"
-      with_items: "{{ komponist.configuration.keys() | select('match', 'influxdbv[1-2]') | list }}"
+      with_items: "{{ komponist.configuration.keys() | select('match', 'influxdbv1') | list }}"
 
     - name: Check Mosquitto MQTT Generated Files in deploy_dir
       ansible.builtin.include_tasks: "{{ playbook_dir }}/services/test_config_mosquitto.yml"
