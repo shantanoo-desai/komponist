@@ -3,6 +3,10 @@ name: Integrity Tests with Ansible
 
 on:
   push:
+    paths-ignore:
+      - "README.md"
+      - "docs/**"
+      - ".vscode/**"
     branches:
       - "main"
   pull_request:
