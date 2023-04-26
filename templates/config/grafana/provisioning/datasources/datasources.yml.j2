@@ -51,3 +51,22 @@ datasources:
       token: {{ credentials.influxdbv2.admin_token }}
     editable: true
 {% endif %}
+
+{% if 'timescaledb' in komponist.configuration.keys() %}
+  - name: Komponist-TimescaleDB
+    type: postgres
+    url: komponist_timescaledb:5432
+    user: {{ credentials.timescaledb.admin_username }}
+    jsonData:
+      database: {{ credentials.timescaledb.database }}
+      sslmode: 'disable'
+      maxOpenConns: 100
+      maxIdleConns: 100
+      maxIdleConnsAuto: true
+      connMaxLifetime: 14400
+      postgresVersion: 1000
+      timescaledb: true
+    secureJsonData:
+      password: {{ credentials.timescaledb.admin_password }}
+    editable: true
+{% endif %}

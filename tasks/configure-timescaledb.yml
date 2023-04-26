@@ -1,0 +1,24 @@
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# configure-timescaledb.yml: Tasks file that generates the settings and Compose service file for TimescaleDB
+---
+- name: '(TimescaleDB) Generating Compose Service File for Deployment'
+  ansible.builtin.template:
+    src: services/docker-compose.timescaledb.yml.j2
+    dest: "{{ komponist.deploy_dir }}/docker-compose.timescaledb.yml"
+    mode: "0755"
