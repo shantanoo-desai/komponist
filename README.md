@@ -113,12 +113,14 @@ enter your vault password for the decryption to occur and Komponist does the res
 
 Currently the following services are available / planned to configure and run:
 
-- [x] __Node-RED__
-- [x] __Mosquitto MQTT Broker__
-- [x] __Traefik Reverse-Proxy + Service Discovery__
-- [x] __InfluxDB v1.x__
-- [x] __InfluxDB v2.x__
-- [x] __Grafana v9.x.__
+| Service Name                       | Version |
+|:----------------------------------:|:-------:|
+| __Node-RED__                       | `3.0.1` |
+| __Mosquitto MQTT Broker__          | `2.0.15`|
+| __Traefik Reverse-Proxy__          | `2.9.8` |
+| __InfluxDB__                       | `1.8`<br> `2.6`|
+| __TimescaleDB__                    | `v15`   |
+| __Grafana__                        | `9.5.1` |
 
 ## Contributing / Development
 
