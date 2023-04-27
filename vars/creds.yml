@@ -121,5 +121,16 @@ credentials:
     admin_token: testToken
 
   grafana:
+    # Parameter: `admin_username` / `admin_password`
+    # Function: Grafana Admin (SuperUser) Credentials
+    # Acceptable Value: string
     admin_username: admin
     admin_password: komponistTest
+
+  timescaledb:
+    # Parameter: `admin_username` / `admin_password` / `database``
+    # Function: TimescaleDB Admin (SuperUser) Credentials
+    # Acceptable Value: string
+    admin_username: admin
+    admin_password: timescaleTest
+    database: test

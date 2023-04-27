@@ -32,6 +32,6 @@
         success_msg: "PASS: {{ item.item }} exist under {{ komponist.deploy_dir }} directory"
         quiet: false
       loop: "{{ test_deploy_dir_service_state.results | map('ansible.utils.keep_keys', ['item', 'exists', 'isdir', 'mode']) }}"
-      when: "item.item != 'influxdbv2'"
+      when: "item.item not in ['influxdbv2', 'timescaledb']"
       loop_control:
         label: "{{ item.item }}"

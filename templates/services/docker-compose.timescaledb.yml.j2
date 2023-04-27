@@ -1,0 +1,50 @@
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+{{ ansible_managed | comment }}
+
+{# docker-compose.timescaledb.yml.j2: Jinja2 Template for TimeScaleDB Compose Service #}
+
+services:
+  timescale:
+{% if 'image' in komponist.configuration.timescaledb %}
+    image: {{ komponist.configuration.timescaledb.image }}:{{ komponist.configuration.timescaledb.version }}
+{% else %}
+    image: docker.io/timescale/timescaledb:{{ komponist.configuration.timescaledb.version }}
+{% endif %}
+    container_name: komponist_timescaledb
+    environment:
+      - POSTGRES_USER_FILE=/run/secrets/timescale_admin_username
+      - POSTGRES_PASSWORD_FILE=/run/secrets/timescale_admin_password
+      - POSTGRES_DB_FILE=/run/secrets/timescale_database
+    secrets:
+      - timescale_admin_username
+      - timescale_admin_password
+      - timescale_database
+    security_opt:
+      - "no-new-privileges:true"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+secrets:
+  timescale_admin_username:
+    environment: TIMESCALEDB_ADMIN_USERNAME
+  timescale_admin_password:
+    environment: TIMESCALEDB_ADMIN_PASSWORD
+  timescale_database:
+    environment: TIMESCALEDB_DATABASE

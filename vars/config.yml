@@ -137,4 +137,16 @@ komponist:
       # Function: Docker Image Version to be pulled from an Image Repository
       # Acceptable Values: string
       # Default Value: 'latest'
-      version: '9.3.11'
+      version: '9.5.1'
+
+    timescaledb:
+      # Parameter: `image` (OPTIONAL)
+      # Function: For Private Image Repositories that are not on DockerHub
+      # Default Value: DockerHub (docker.io)
+      # Acceptable Value: string (URL to your Private Repository including Image Name)
+      # image: <IMAGE_REPO_URL>/<IMAGE_NAME>
+
+      # Parameter: `version` (REQUIRED)
+      # Function: Docker Image Version to be pulled from an Image Repository
+      # Acceptable Values: string
+      version: 'latest-pg15'
