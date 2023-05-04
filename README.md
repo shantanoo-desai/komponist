@@ -52,12 +52,16 @@ file as that on the controller node (where Komponist is executed).
 This caveat may be mitigated if one uses a well-known directories like `/usr/share/` or `/etc/` because these paths are
 reflected similarly on the Controller as well as Remote machines
 
-### InfluxDBv2 UI rendering
+### QuestDB / InfluxDBv2 UI rendering
 
-Since InfluxDBv2's UI does not provide any configuration to render the UI behind a root path, it is not possible to render
-the UI under `/influxdbv2` path. At the moment, it is only possible to view the UI when visiting the following link:
+Since QuestDB / InfluxDBv2's UI does not provide any configuration to render the UI behind a root path, it is not possible to render
+the UI under `/influxdbv2` or `/questdb` path. At the moment, it is only possible to view the UI when visiting the following links:
 
     http://influxdbv2.localhost
+
+OR
+
+    http://questdb.localhost
 
 ## Usage
 
@@ -121,6 +125,7 @@ Currently the following services are available / planned to configure and run:
 | __InfluxDB__                       | `1.8`<br> `2.6`|
 | __TimescaleDB__                    | `v15`   |
 | __Grafana__                        | `9.5.1` |
+| __QuestDB__                        | `7.1.1` |
 
 ## Contributing / Development
 

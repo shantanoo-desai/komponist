@@ -1,0 +1,7 @@
+questdb-http-health-router:
+  entryPoints:
+    - web
+  middlewares:
+    - questdb-mw
+  service: questdb-svc-health
+  rule: PathPrefix(`/questdb/healthz`)

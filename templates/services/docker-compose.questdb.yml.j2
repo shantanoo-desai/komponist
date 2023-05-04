@@ -1,0 +1,37 @@
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+{{ ansible_managed | comment }}
+
+{# docker-compose.questdb.yml.j2: Jinja2 Template for QuestDB Compose Service #}
+
+services:
+  questdb:
+{% if 'image' in komponist.configuration.questdb %}
+    image: {{ komponist.configuration.questdb.image }}:{{ komponist.configuration.questdb.version }}
+{% else %}
+    image: docker.io/questdb/questdb:{{ komponist.configuration.questdb.version }}
+{% endif %}
+    container_name: komponist_questdb
+    environment:
+      - QDB_SHARED_WORKER_COUNT=2
+      - QDB_HTTP_BIND_TO=0.0.0.0:4000 # use port 4000 to avoid conflicts with Portainer
+    security_opt:
+      - "no-new-privileges:true"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro

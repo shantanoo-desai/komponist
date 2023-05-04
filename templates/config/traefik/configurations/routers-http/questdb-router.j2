@@ -1,0 +1,7 @@
+questdb-http-router:
+  entryPoints:
+    - web
+  middlewares:
+    - questdb-mw
+  service: questdb-svc
+  rule: PathPrefix(`/questdb`)
