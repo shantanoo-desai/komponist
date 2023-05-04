@@ -38,7 +38,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       
       - name: Install ansible and pip dependencies
-        run: python -m pip install ansible docker passlib jsonschema
+        run: python -m pip install -r requirements.txt
       
       - name: Install ansible.utils collection
         run: ansible-galaxy collection install ansible.utils

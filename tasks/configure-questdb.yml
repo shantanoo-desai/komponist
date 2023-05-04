@@ -13,28 +13,12 @@
 #   GNU Affero General Public License for more details.
 #
 #   You should have received a copy of the GNU Affero General Public License
-#   along with this program.  If not, see <https://www.gnu.org/licenses/>. #
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-{{ ansible_managed | comment }}
-
-{# mosquitto.conf.j2: Jinja2 Template for mosquitto.conf file required for Mosquitto MQTT Broker #}
-
-# MQTT Port Listener
-listener    1883
-protocol    mqtt
-
-# Authentication
-allow_anonymous     false
-password_file       /mosquitto_users
-
-# Authorization 
-acl_file    /mosquitto_acl {# using Docker Config #}
-
-# Logging Configuration
-log_timestamp true
-log_type all
-
-{% if komponist.data_persistence | default(false) %}
-persistence true
-persistence_location /mosquitto/data/
-{% endif %}
+# configure-questdb.yml: Tasks file that generates the settings and Compose service file for QuestDB
+---
+- name: '(QuestDB) Generating Compose Service File for Deployment'
+  ansible.builtin.template:
+    src: services/docker-compose.questdb.yml.j2
+    dest: "{{ komponist.deploy_dir }}/docker-compose.questdb.yml"
+    mode: "0755"

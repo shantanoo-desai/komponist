@@ -23,11 +23,13 @@ komponist:
   # Acceptable Value: string
   # Default Value: komponist
   project_name: 'komponist'
+
   # Parameter: `deploy_dir` (REQUIRED)
   # Function: Creates a directory in the dedicated path with the generated
   #           settings files + docker compose files
   # Acceptable Value: Complete Path to where the directory should exist
   deploy_dir: './deploy'
+
   # Parameter: `uid` (OPTIONAL)
   # Function: Use the user id of the host's user and avoid using `root`
   #           within containers. This is also useful for containers that use
@@ -35,6 +37,13 @@ komponist:
   # Acceptable Value: pass value of `id -u` in terminal here
   # Default Value: the uid of the current user set via `ansible_user_uid` variable
   # uid: 1000
+
+  # Parameter: `data_persistence` (OPTIONAL)
+  # Function: Let Komponist know if the generated data from containers needs to stored
+  #           or it needs to be ephemeral
+  # Acceptable Value: Boolean values should be strings: either 'true' or 'false'
+  # Default Value: false (stack is ephemeral)
+  # data_persistence: true
 
   configuration:
     nodered:
@@ -150,3 +159,27 @@ komponist:
       # Function: Docker Image Version to be pulled from an Image Repository
       # Acceptable Values: string
       version: 'latest-pg15'
+
+    questdb:
+      # Parameter: `image` (OPTIONAL)
+      # Function: For Private Image Repositories that are not on DockerHub
+      # Default Value: DockerHub (docker.io)
+      # Acceptable Value: string (URL to your Private Repository including Image Name)
+      # image: <IMAGE_REPO_URL>/<IMAGE_NAME>
+
+      # Parameter: `version` (REQUIRED)
+      # Function: Docker Image Version to be pulled from an Image Repository
+      # Acceptable Values: string
+      version: '7.1.1'
+
+      # Parameter: `disable_ui` (Optional)
+      # Function: Disable QuestDB UI NOTE: UI will only be available on localhost
+      #           under `questdb.localhost`
+      # Default Value: false (UI is available)
+      # disable_ui: false
+
+      # Parameter: `expose_http` (OPTIONAL)
+      # Function: expose HTTP API behind reverse-proxy
+      # Acceptable Values: Boolean
+      # Default Value: false
+      expose_http: true

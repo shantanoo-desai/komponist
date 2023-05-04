@@ -70,3 +70,22 @@ datasources:
       password: {{ credentials.timescaledb.admin_password }}
     editable: true
 {% endif %}
+
+{% if 'questdb' in komponist.configuration.keys() %}
+  - name: Komponist-QuestDB
+    type: postgres
+    url: komponist_questdb:8812
+    user: admin
+    jsonData:
+      database: qdb
+      sslmode: 'disable'
+      maxOpenConns: 100
+      maxIdleConns: 100
+      maxIdleConnsAuto: true
+      connMaxLifetime: 14400
+      postgresVersion: 1000
+      timescaledb: true
+    secureJsonData:
+      password: quest
+    editable: true
+{% endif %}

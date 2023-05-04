@@ -43,6 +43,20 @@ http:
 # InfluxDBv2 UI router
 {% include 'routers-http/influxdbv2-ui-router.j2' %}
 {% endif %}
+
+{% if komponist.configuration.questdb.expose_http | default(false) %}
+# QuestDB HTTP API router
+{% include 'routers-http/questdb-router.j2' %}
+
+# QuestDB HTTP Health API Router
+{% include 'routers-http/questdb-health-router.j2' %}
+{% endif %}
+
+
+{% if not komponist.configuration.questdb.disable_ui | default(false) %}
+# QuestDB UI router
+{% include 'routers-http/questdb-ui-router.j2' %}
+{% endif %}
 {% endfilter %}
 
   # Middlewares
@@ -56,6 +70,9 @@ http:
 
 # Grafana Middleware
 {% include 'middlewares-http/grafana-mw.j2' %}
+
+# QuestDB Middleware
+{% include 'middlewares-http/questdb-mw.j2' %}
 {% endfilter +%}
 
   # Services
@@ -72,6 +89,12 @@ http:
 
 # InfluxDBv2 Service
 {% include 'services-http/influxdbv2-svc.j2' %}
+
+# QuestDB Service
+{% include 'services-http/questdb-svc.j2' %}
+
+# QuestDB Health Service
+{% include 'services-http/questdb-svc-health.j2'%}
 {% endfilter %}
 
 

@@ -25,7 +25,7 @@ services:
 {% if 'image' in komponist.configuration.mosquitto %}
     image: {{ komponist.configuration.mosquitto.image }}:{{ komponist.configuration.mosquito.version }}
 {% else %}
-    image: docker.io/eclipse-mosquitto:{{ configuration.mosquitto.version | default('latest') }}
+    image: docker.io/eclipse-mosquitto:{{ komponist.configuration.mosquitto.version | default('latest') }}
 {% endif %}
     container_name: komponist_mosquitto
     configs:
@@ -45,6 +45,13 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+{% if komponist.data_persistence | default(false) %}
+      - mosquitto:/mosquitto/data
+
+volumes:
+  mosquitto:
+
+{% endif %}
 
 configs:
   mosquitto_conf:
