@@ -23,11 +23,13 @@ komponist:
   # Acceptable Value: string
   # Default Value: komponist
   project_name: 'komponist'
+
   # Parameter: `deploy_dir` (REQUIRED)
   # Function: Creates a directory in the dedicated path with the generated
   #           settings files + docker compose files
   # Acceptable Value: Complete Path to where the directory should exist
   deploy_dir: './deploy'
+
   # Parameter: `uid` (OPTIONAL)
   # Function: Use the user id of the host's user and avoid using `root`
   #           within containers. This is also useful for containers that use
@@ -35,6 +37,13 @@ komponist:
   # Acceptable Value: pass value of `id -u` in terminal here
   # Default Value: the uid of the current user set via `ansible_user_uid` variable
   # uid: 1000
+
+  # Parameter: `data_persistence` (OPTIONAL)
+  # Function: Let Komponist know if the generated data from containers needs to stored
+  #           or it needs to be ephemeral
+  # Acceptable Value: Boolean values should be strings: either 'true' or 'false'
+  # Default Value: false (stack is ephemeral)
+  # data_persistence: true
 
   configuration:
     nodered:

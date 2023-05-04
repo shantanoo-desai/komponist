@@ -40,6 +40,13 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+{% if komponist.data_persistence | default(false) %}
+      - timescale:/home/postgres/pgdata/data
+
+volumes:
+  timescale:
+
+{% endif %}
 
 secrets:
   timescale_admin_username:

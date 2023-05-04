@@ -45,6 +45,13 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+{% if komponist.data_persistence | default(false) %}
+      - mosquitto:/mosquitto/data
+
+volumes:
+  mosquitto:
+
+{% endif %}
 
 configs:
   mosquitto_conf:

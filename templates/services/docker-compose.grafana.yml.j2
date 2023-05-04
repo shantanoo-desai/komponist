@@ -50,6 +50,13 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+{% if komponist.data_persistence | default(false) %}
+      - grafana:/var/lib/grafana
+
+volumes:
+  grafana:
+
+{% endif %}
 
 secrets:
     grafana_admin_username:

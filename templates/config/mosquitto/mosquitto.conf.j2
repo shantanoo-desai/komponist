@@ -33,3 +33,8 @@ acl_file    /mosquitto_acl {# using Docker Config #}
 # Logging Configuration
 log_timestamp true
 log_type all
+
+{% if komponist.data_persistence | default(false) %}
+persistence true
+persistence_location /mosquitto/data/
+{% endif %}

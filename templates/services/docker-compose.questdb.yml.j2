@@ -35,3 +35,10 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+{% if komponist.data_persistence | default(false) %}
+      - questdb:/var/lib/questdb
+
+volumes:
+  questdb:
+
+{% endif %}

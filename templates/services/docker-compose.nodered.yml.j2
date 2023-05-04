@@ -43,6 +43,13 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+{% if komponist.data_persistence | default(false) %}
+      - nodered:/data
+
+volumes:
+  nodered:
+
+{% endif %}
 
 configs:
   nodered_settings:

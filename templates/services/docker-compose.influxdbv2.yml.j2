@@ -55,6 +55,13 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+{% if komponist.data_persistence | default(false) %}
+      - influxdbv2:/var/lib/influxdbv2
+
+volumes:
+  influxdbv2:
+
+{% endif %}
 
 secrets:
   influxdbv2_admin_username:
