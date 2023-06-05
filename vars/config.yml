@@ -62,8 +62,8 @@ komponist:
       # Parameter: `disable_editor` (OPTIONAL)
       # Function: Disable Node-RED Editor
       # Default Value: false (if not set)
-      # Acceptable Values: Boolean values should be strings: either 'true' or 'false'
-      disable_editor: 'false'
+      # Acceptable Values: either 'true' or 'false'
+      disable_editor: false
 
     mosquitto:
       # Parameter: `image` (OPTIONAL)
