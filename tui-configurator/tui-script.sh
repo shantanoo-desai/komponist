@@ -229,11 +229,11 @@ Use SPACEBAR to select/de-select, ENTER to proceed.
 
             "nodered")
 
-                # Add NodeRED Configuration (EXCEPTION here boolean goes as string)
-                generate_kv_str_in_file ".komponist.configuration.${service}.disable_editor" "false" $CONFIG_FILE
+                # Add NodeRED Configuration
+                generate_kv_bool_in_file ".komponist.configuration.${service}.disable_editor" "false" $CONFIG_FILE
 
                 # Add NodeRED Credentials Keys
-                generate_kv_bool_in_file ".credentials.${service}.credential_secret" "<INSERT_VALUE>" $CREDS_FILE
+                generate_kv_str_in_file ".credentials.${service}.credential_secret" "<INSERT_VALUE>" $CREDS_FILE
                 
                 # NodeRED Credentials Example
                 yq -i '.credentials.nodered.users += 
