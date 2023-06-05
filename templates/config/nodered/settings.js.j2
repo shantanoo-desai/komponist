@@ -114,8 +114,15 @@ module.exports = {
      * is not affected by this option. To disable both the editor and the admin
      * API, use either the httpRoot or httpAdminRoot properties
      */
-    disableEditor: {{ komponist.configuration.nodered.disable_editor | default('false') }},
-
+    {% if komponist.configuration.nodered.disable_editor | default(false) -%}
+    
+        disableEditor: true,
+    
+    {% else -%}
+    
+        disableEditor: false,
+    {% endif %}
+ 
     /** Customising the editor
      * See https://nodered.org/docs/user-guide/runtime/configuration#editor-themes
      * for all available options.
