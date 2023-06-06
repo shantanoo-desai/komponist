@@ -45,6 +45,12 @@ Currently the following services are available to configure and run:
 | __Grafana__                        | `9.5.1` |
 | __QuestDB__                        | `7.1.1` |
 
+These services can be further tuned using the files under the `vars` directory:
+
+| File           | Purpose                                         |
+|:---------------|:------------------------------------------------|
+| `config.yml`   | Core service configuration (API) endpoints <br> and container image versions |
+| `creds.yml`    | Credentials for services (Username/Passwords/Databases)     |
 
 ### Complete Komponist Stack
 
@@ -107,7 +113,7 @@ You can bring the stack up using:
 docker compose --project-directory=deploy up -d
 ```
 
-### Service Endpoints
+### Service Endpoints / Information
 
 The following service names can be used to obtain log information using:
 
@@ -118,7 +124,7 @@ docker compose --project-directory=deploy logs -f <service_name>
 | Service Name | URL                           |
 |:------------:|:-----------------------------:|
 | `nodered`    | `http://localhost/nodered`    |
-| `mosquito`   | `mqtt://localhost:1883`       |
+| `mosquitto`   | `mqtt://localhost:1883`      |
 | `traefik`    |  N/A                          |
 | `influxdvb1` | `http://localhost/influxdbv1` |
 | `influxdbv2` | `http://influxdbv2.localhost` |
@@ -142,4 +148,3 @@ Komponist is licensed under __Affero GNU Public License v3.0__.
 [0]: https://docs.docker.com/compose/compose-v2/
 [1]: https://docs.docker.com/get-docker/
 [2]: docs/Development.md
-
