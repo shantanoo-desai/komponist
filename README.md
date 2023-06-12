@@ -71,7 +71,7 @@ Terminal User-Interface (TUI).
 
     ```bash
     docker run -it --rm \
-        -v ./examples/custom_stack:/usr/tui \
+        -v ./examples/custom_stack:/home/komponist \
         ghcr.io/shantanoo-desai/komponist-tui:main
     ```
 
@@ -142,4 +142,3 @@ Komponist is licensed under __Affero GNU Public License v3.0__.
 [0]: https://docs.docker.com/compose/compose-v2/
 [1]: https://docs.docker.com/get-docker/
 [2]: docs/Development.md
-

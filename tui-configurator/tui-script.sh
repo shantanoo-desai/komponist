@@ -80,7 +80,22 @@ function generate_kv_bool_in_file {
 # description: initial setup function to create YAML files and add initial keys
 #              to them
 function init_setup {
-    touch $CONFIG_FILE $CREDS_FILE
+
+    if [ -f "$CONFIG_FILE" ]; then 
+        echo "Configuration File Exists.. Overwriting it!"
+        truncate -s 0 $CONFIG_FILE
+    else
+        echo "Configuration File Does Not Exist.. Creating it!"
+        touch $CONFIG_FILE
+    fi
+    
+    if [ -f "$CREDS_FILE" ]; then 
+        echo "Credentials File Exists.. Overwriting it!"
+        truncate -s 0 $CREDS_FILE
+    else
+        echo "Configuration File Does Not Exist.. Creating it!"
+        touch $CREDS_FILE
+    fi
 
     # insert header comment to files
     yq -i '. head_comment="Generated via Komponist TUI.
