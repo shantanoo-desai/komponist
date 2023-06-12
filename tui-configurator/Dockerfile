@@ -19,9 +19,13 @@ FROM debian:bookworm-slim
 
 ENV TERM xterm-256color
 
-USER 1000
 
-WORKDIR /usr/tui
+RUN groupadd -r komponist --gid=1000 && \
+     useradd -r -g komponist --uid=1000 --create-home --home-dir=/home/komponist --shell=/bin/bash komponist
+
+USER komponist
+
+WORKDIR /home/komponist
 
 COPY --from=ghcr.io/charmbracelet/gum:v0.10.0 /usr/local/bin/gum /usr/local/bin/gum
 COPY --from=docker.io/mikefarah/yq:4.34.1 /usr/bin/yq /usr/bin/yq
