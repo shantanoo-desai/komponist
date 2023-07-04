@@ -50,6 +50,7 @@ jobs:
         with:
           context: "{{defaultContext}}:tui-configurator"
           push: true
+          provenance: false # Potential solution based on docker/build-push-action/issues/820
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
