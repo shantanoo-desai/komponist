@@ -9,11 +9,11 @@
       ansible.builtin.set_fact:
         mosquitto_users_file: "{{ lookup('ansible.builtin.file', '{{ playbook_dir }}/../{{ komponist.deploy_dir }}/mosquitto/users') }}"
 
-    - name: (Mosquitto) Assert that plain-text passwords were encrypted by Docker Container mosquitto-passgen
+    - name: (Mosquitto) Assert that plain-text passwords were encrypted by Custom Filter mosquitto_passwd
       ansible.builtin.assert:
         that: "{{ mosquitto_users_file | regex_findall(sequence) | count > 0 }}"
-        fail_msg: "FAIL: Docker Container DID NOT encrypt the plain-text passwords for Mosquitto Users file."
-        success_msg: "PASS: Docker Container did encyrpt the plain-text passwords for Mosquitto Users file."
+        fail_msg: "FAIL: Custom Filter mosquitto_passwd DID NOT encrypt the plain-text passwords for Mosquitto Users file."
+        success_msg: "PASS: Custom Filter mosquitto_passwd did encyrpt the plain-text passwords for Mosquitto Users file."
       vars:
         sequence: ':\$7\$101\$'
 
