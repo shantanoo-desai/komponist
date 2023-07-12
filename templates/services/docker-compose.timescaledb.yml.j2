@@ -32,9 +32,12 @@ services:
       - POSTGRES_PASSWORD_FILE=/run/secrets/timescale_admin_password
       - POSTGRES_DB_FILE=/run/secrets/timescale_database
     secrets:
-      - timescale_admin_username
-      - timescale_admin_password
-      - timescale_database
+      - source: timescale_admin_username
+        mode: 0444
+      - source: timescale_admin_password
+        mode: 0444
+      - source: timescale_database
+        mode: 0444
     security_opt:
       - "no-new-privileges:true"
     volumes:

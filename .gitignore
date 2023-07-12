@@ -1,2 +1,5 @@
 # Ignore deploy directory
 deploy/
+
+# Python Caches from custom plugins
+__pycache__
