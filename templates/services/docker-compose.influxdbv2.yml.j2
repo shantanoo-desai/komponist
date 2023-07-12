@@ -46,9 +46,12 @@ services:
       - "traefik.http.routers.influxdbv2-service=influxdbv2-svc@file"
 {% endif %}
     secrets:
-      - influxdbv2_admin_username
-      - influxdbv2_admin_password
-      - influxdbv2_admin_token
+      - source: influxdbv2_admin_username
+        mode: 0444
+      - source: influxdbv2_admin_password
+        mode: 0444
+      - source: influxdbv2_admin_token
+        mode: 0444
     security_opt:
       - "no-new-privileges:true"
     user: "{{ komponist.uid | default(ansible_user_uid) }}"

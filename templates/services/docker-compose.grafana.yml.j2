@@ -34,8 +34,10 @@ services:
       - GF_SERVER_ROOT_URL=/grafana
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
     secrets:
-      - grafana_admin_username
-      - grafana_admin_password
+      - source: grafana_admin_username
+        mode: 0444
+      - source: grafana_admin_password
+        mode: 0444
     logging:
       options:
         max-size: "5m"
