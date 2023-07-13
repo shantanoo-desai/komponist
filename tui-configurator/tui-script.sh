@@ -134,18 +134,6 @@ function custom_core_config {
 
     # Add deploy directory to configuration file
     generate_kv_str_in_file ".komponist.deploy_dir" "${DEPLOY_DIR}" $CONFIG_FILE
-
-    ## Check for User ID
-    USER_ID=$(gum input --placeholder "Provide the user id for the project. (Press ENTER to skip)")
-    
-    if [ "$USER_ID" == "" ]; then
-        # Default Value for User ID
-        gum spin -s line --title "skipping user id" -- sleep 0.5
-    else
-    # Add user id to configuration file
-    generate_kv_str_in_file ".komponist.uid" "${USER_ID}" $CONFIG_FILE
-
-    fi
     
     ## Check for Persistence
     clear
