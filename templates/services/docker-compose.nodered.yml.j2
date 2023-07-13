@@ -39,7 +39,6 @@ services:
       - "traefik.http.routers.nodered-service=nodered-svc@file"
     security_opt:
       - "no-new-privileges=true"
-    user: "{{ komponist.uid | default(ansible_user_uid) }}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
