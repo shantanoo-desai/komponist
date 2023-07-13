@@ -31,7 +31,7 @@ services:
       - QDB_SHARED_WORKER_COUNT=2
       - QDB_HTTP_BIND_TO=0.0.0.0:4000 # use port 4000 to avoid conflicts with Portainer
     security_opt:
-      - "no-new-privileges:true"
+      - "no-new-privileges=true"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro

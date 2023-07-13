@@ -37,7 +37,7 @@ services:
     labels:
       - "traefik.enable=true"
     security_opt:
-      - "no-new-privileges:true"
+      - "no-new-privileges=true"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro

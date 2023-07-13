@@ -46,7 +46,7 @@ services:
       - "traefik.http.routers.influxdbv1-service=influxdbv2-svc@file"
 {% endif %}
     security_opt:
-      - "no-new-privileges:true"
+      - "no-new-privileges=true"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
