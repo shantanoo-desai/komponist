@@ -48,10 +48,6 @@
             fail_msg: "FAIL: docker-compose.yml DOES NOT exist in {{ komponist.deploy_dir }} directory."
             success_msg: "PASS: docker-compose.yml File exists in {{ komponist.deploy_dir }} directory."
 
-    - name: Check InfluxDB V1/V2 Generated Files in deploy_dir
-      ansible.builtin.include_tasks: "{{ playbook_dir }}/services/test_config_influxdb.yml"
-      with_items: "{{ komponist.configuration.keys() | select('match', 'influxdbv1') | list }}"
-
     - name: Check Mosquitto MQTT Generated Files in deploy_dir
       ansible.builtin.include_tasks: "{{ playbook_dir }}/services/test_config_mosquitto.yml"
       when: "'mosquitto' in komponist.configuration.keys()"

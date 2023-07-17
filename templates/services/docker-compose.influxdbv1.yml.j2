@@ -28,8 +28,6 @@ services:
     image: docker.io/influxdb:{{ komponist.configuration.influxdbv1.version | default('latest') }}
 {% endif %}
     container_name: komponist_influxdbv1
-    env_file:
-      - ./influxdbv1/influxdbv1.env
     environment:
       - INFLUXDB_HTTP_AUTH_ENABLED=true
       - INFLUXDB_REPORTING_DISABLED=true
