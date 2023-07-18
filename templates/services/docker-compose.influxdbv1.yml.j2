@@ -28,14 +28,21 @@ services:
     image: docker.io/influxdb:{{ komponist.configuration.influxdbv1.version | default('latest') }}
 {% endif %}
     container_name: komponist_influxdbv1
-    env_file:
-      - ./influxdbv1/influxdbv1.env
     environment:
       - INFLUXDB_HTTP_AUTH_ENABLED=true
       - INFLUXDB_REPORTING_DISABLED=true
       - INFLUXDB_DATA_QUERY_LOG_ENABLED=false
       - INFLUXDB_HTTP_LOG_ENABLED=false
       - INFLUXDB_CONTINUOUS_QUERIES_LOG_ENABLED=false
+      - INFLUXDB_DB=${INFLUXDB_DB}
+      - INFLUXDB_ADMIN_USER=${INFLUXDB_ADMIN_USER}
+      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_ADMIN_PASSWORD}
+      - INFLUXDB_USER=${INFLUXDB_USER}
+      - INFLUXDB_USER_PASSWORD=${INFLUXDB_USER_PASSWORD}
+      - INFLUXDB_READ_USER=${INFLUXDB_READ_USER}
+      - INFLUXDB_READ_USER_PASSWORD=${INFLUXDB_READ_USER_PASSWORD}
+      - INFLUXDB_WRITE_USER=${INFLUXDB_WRITE_USER}
+      - INFLUXDB_WRITE_USER_PASSWORD=${INFLUXDB_WRITE_USER_PASSWORD}
     logging:
       options:
         max-size: "5m"

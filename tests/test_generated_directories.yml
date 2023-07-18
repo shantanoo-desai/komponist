@@ -3,6 +3,7 @@
   vars:
     # Services that do not have any specific configuration directories to test
     excluded_services:
+      - influxdbv1
       - influxdbv2
       - timescaledb
       - questdb
