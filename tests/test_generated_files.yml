@@ -63,3 +63,7 @@
     - name: Check Traefik Generated Files in deploy_dir
       ansible.builtin.include_tasks: "{{ playbook_dir }}/services/test_config_traefik.yml"
       when: "'traefik' in komponist.configuration.keys()"
+
+    - name: Check Telegraf Generated File in deploy_dir
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/services/test_config_telegraf.yml"
+      when: "'telegraf' in komponist.configuration.keys()"
