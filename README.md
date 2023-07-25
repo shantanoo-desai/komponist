@@ -12,8 +12,8 @@ abstraction. The following are required to make Komponist work:
 
 | Name       | Version    | Purpose                                                           |
 |:-----------|:----------:|:-----------------------------------------------------------------:|
-| `docker`   | `24.0.x`   | Container Runtime where your compose stacks will run              |
-| `docker compose` | `2.18.1` | Docker Compose V2 Plugin for Docker Engine                    |
+| `docker`   | `>= 24.0.2`   | Container Runtime where your compose stacks will run              |
+| `docker compose` | `>= 2.20.0` | Docker Compose V2 Plugin for Docker Engine                    |
 
 Install them on your host accordingly. See [Docker Documentations][1]
 
@@ -21,7 +21,7 @@ Install them on your host accordingly. See [Docker Documentations][1]
 
 | Name      | Version | Purpose                                                                      |
 |:----------|:-------:|:----------------------------------------------------------------------------:|
-| `ansible`  | `> 2.14.x` | Almost _all_ things within Komponist are achieved via ansible            |
+| `ansible`  | `>= 2.15.x` | Almost _all_ things within Komponist are achieved via ansible           |
 | `passlib` | `1.7.x` | required for password encryption hashing requirements for certain containers |
 | `docker`  | `>5.x.x`| required to control single container instances                               | 
 
@@ -42,6 +42,7 @@ Currently the following services are available to configure and run:
 | __Traefik Reverse-Proxy__          | `2.9.8` |
 | __InfluxDB__                       | `1.8`<br> `2.6`|
 | __TimescaleDB__                    | `v15`   |
+| __Telegraf__                       | `1.27.2`|
 | __Grafana__                        | `9.5.1` |
 | __QuestDB__                        | `7.1.1` |
 
@@ -126,6 +127,7 @@ docker compose --project-directory=deploy logs -f <service_name>
 | `nodered`    | `http://localhost/nodered`    |
 | `mosquitto`   | `mqtt://localhost:1883`      |
 | `traefik`    |  N/A                          |
+| `telegraf`   |  N/A                          |
 | `influxdvb1` | `http://localhost/influxdbv1` |
 | `influxdbv2` | `http://influxdbv2.localhost` |
 | `timescaledb` | Not Configured to an API     |
