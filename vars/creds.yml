@@ -134,3 +134,23 @@ credentials:
     admin_username: admin
     admin_password: timescaleTest
     database: test
+
+  telegraf:
+    # Telegraf Plugins for Komponist
+    # Mention `use_creds` parameter to mention which credentials
+    # Should the plugin use to connect to the respective service.
+    plugins:
+      input:
+        mosquitto:
+          use_creds: ro_user
+          sub_topics:
+            - test/readwrite
+          data_format: influx
+
+      output:
+        influxdbv1:
+          use_creds: readwrite_user
+        influxdbv2:
+          use_creds: admin_token
+        questdb:
+          use_creds: ""

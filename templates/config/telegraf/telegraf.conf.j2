@@ -1,0 +1,37 @@
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+{{ ansible_managed | comment }}
+
+## Input Plugins
+
+{% for input_plugin in credentials.telegraf.plugins.input.keys() %}
+    {% include 'inputs/' + input_plugin + '.conf.j2' %}
+{% endfor %}
+
+## Output Plugins
+
+{% for output_plugin in credentials.telegraf.plugins.output.keys() %}
+    {% include 'outputs/' + output_plugin + '.conf.j2' %}
+{% endfor %}
+
+
+## SecretStore Plugin
+
+[[secretstores.docker]]
+
+id = "komponist_secretstore"

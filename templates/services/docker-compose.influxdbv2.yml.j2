@@ -34,7 +34,7 @@ services:
       - DOCKER_INFLUXDB_INIT_RETENTION=${DOCKER_INFLUXDB_INIT_RETENTION}
       - DOCKER_INFLUXDB_INIT_USERNAME_FILE=/run/secrets/influxdbv2_admin_username
       - DOCKER_INFLUXDB_INIT_PASSWORD_FILE=/run/secrets/influxdbv2_admin_password
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN_FILE=/run/secrets/influxdbv2_admin_token
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDBV2_ADMIN_TOKEN}
 {% if komponist.configuration.influxdbv2.disable_ui | default(false) %}
       - INFLUXD_UI_DISABLED=true
 {% endif %}
@@ -49,8 +49,6 @@ services:
       - source: influxdbv2_admin_username
         mode: 0444
       - source: influxdbv2_admin_password
-        mode: 0444
-      - source: influxdbv2_admin_token
         mode: 0444
     security_opt:
       - "no-new-privileges=true"
@@ -70,5 +68,3 @@ secrets:
     environment: INFLUXDBV2_ADMIN_USERNAME
   influxdbv2_admin_password:
     environment: INFLUXDBV2_ADMIN_PASSWORD
-  influxdbv2_admin_token:
-    environment: INFLUXDBV2_ADMIN_TOKEN

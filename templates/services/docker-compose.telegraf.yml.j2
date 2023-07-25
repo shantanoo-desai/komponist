@@ -1,0 +1,89 @@
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+{{ ansible_managed | comment }}
+
+{# docker-compose.telegraf.yml.j2: Jinja2 Template for Telegraf Compose Service #}
+services:
+  telegraf:
+{# Check whether the Image should be pulled from a Public Registry or Internal Registry #}
+{% if 'image' in komponist.configuration.telegraf %}
+    image: {{ komponist.configuration.telegraf.image }}:{{ komponist.configuration.telegraf.version }}
+{% else %}
+    image: docker.io/telegraf:{{ komponist.configuration.telegraf.version | default('latest') }}
+{% endif %}
+    container_name: komponist_telegraf
+    command: --config /telegraf_config
+    configs:
+      - telegraf_config
+    secrets:
+{% if 'mosquitto' in credentials.telegraf.plugins.input %}
+      - source: mqtt_username
+        mode: 0444
+      - source: mqtt_password
+        mode: 0444
+{% endif %}
+{% if 'influxdbv1' in credentials.telegraf.plugins.output %}
+      - source: influxdbv1_user
+        mode: 0444
+      - source: influxdbv1_user_password
+        mode: 0444
+      - source: influxdbv1_db
+        mode: 0444
+{% endif %}
+
+{% if 'influxdbv2' in credentials.telegraf.plugins.output %}
+      - source: influxdbv2_admin_token
+        mode: 0444
+      - source: influxdbv2_init_org
+        mode: 0444
+      - source: influxdbv2_init_bucket
+        mode: 0444
+{% endif %}
+
+    security_opt:
+      - "no-new-privileges=true"
+
+configs:
+  telegraf_config:
+    file: ./telegraf/telegraf.conf
+
+secrets:
+{% if 'mosquitto' in credentials.telegraf.plugins.input %}
+  mqtt_username:
+    environment: TELEGRAF_MQTT_USERNAME
+  mqtt_password:
+    environment: TELEGRAF_MQTT_PASSWORD
+{% endif %}
+
+{% if 'influxdbv1' in credentials.telegraf.plugins.output %}
+  influxdbv1_user:
+    environment: INFLUXDB_USER
+  influxdbv1_user_password:
+    environment: INFLUXDB_USER_PASSWORD
+  influxdbv1_db:
+    environment: INFLUXDB_DB
+{% endif %}
+
+{% if 'influxdbv2' in credentials.telegraf.plugins.output %}
+  influxdbv2_admin_token:
+    environment: INFLUXDBV2_ADMIN_TOKEN
+  influxdbv2_init_org:
+    environment: DOCKER_INFLUXDB_INIT_ORG
+  influxdbv2_init_bucket:
+    environment: DOCKER_INFLUXDB_INIT_BUCKET
+{% endif %}
