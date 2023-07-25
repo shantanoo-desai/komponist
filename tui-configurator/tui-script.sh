@@ -28,6 +28,7 @@ declare -A available_services=(
     [mosquitto]="2.0.15"
     [nodered]="3.0.1"
     [questdb]="7.1.1"
+    [telegraf]="1.27.2-alpine"
     [timescaledb]="latest-pg15"
 )
 
@@ -103,6 +104,7 @@ It is recommended to control some configuration values according to your needs."
 
     yq -i '. head_comment="Generated via Komponist TUI.
 Please add the necessary credentials for the selected services.
+For reference please refer to the `vars/creds.yml` file in the Komponist Repository.
 TIP: You can encrypt this file using `ansible-vault encrypt creds.yml`."' $CREDS_FILE
 
     # by default add Traefik Configuration
@@ -256,6 +258,28 @@ Use SPACEBAR to select/de-select, ENTER to proceed.
                 # Add QuestDB related Configuration
                 generate_kv_bool_in_file ".komponist.configuration.${service}.expose_http" "false" $CONFIG_FILE
                 generate_kv_bool_in_file ".komponist.configuration.${service}.disable_ui" "false" $CONFIG_FILE
+                ;;
+
+            "telegraf")
+
+                # Add Telegraf related Configuration
+
+                ## Input Plugins     
+                generate_kv_str_in_file '.credentials.telegraf.plugins.input.mosquitto.use_creds' "<MOSQUITTO_USERNAME>" $CREDS_FILE
+                generate_kv_str_in_file '.credentials.telegraf.plugins.input.mosquitto.data_format' "influx" $CREDS_FILE
+                yq -i '.credentials.telegraf.plugins.input.mosquitto.sub_topics += [
+                    "topic/1/to/subscribe",
+                    "topic/+/to"
+                ]' $CREDS_FILE
+
+                ## Output Plugins
+                generate_kv_str_in_file '.credentials.telegraf.plugins.output.influxdbv1.use_creds' "<INFLUXDB_TELEGRAF_USER>" $CREDS_FILE
+                generate_kv_str_in_file '.credentials.telegraf.plugins.output.influxdbv2.use_creds' "<INFLUXDBV2_TELEGRAF_TOKEN>" $CREDS_FILE
+                generate_kv_str_in_file '.credentials.telegraf.plugins.output.questdb.use_creds' "" $CREDS_FILE
+                yq -i '.credentials.telegraf.plugins.output.questdb.use_creds line_comment="should be an empty string"' $CREDS_FILE
+
+                yq -i '(.credentials.telegraf.plugins | key) line_comment="please refer to the `vars/creds.yml` for example values"' $CREDS_FILE
+                yq -i '(.credentials.telegraf.plugins.output | key) line_comment="Remove any plugins that are NOT part of your stack"' $CREDS_FILE
                 ;;
             
             "timescaledb")
