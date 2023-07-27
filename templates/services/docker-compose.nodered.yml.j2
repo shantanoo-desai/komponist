@@ -28,9 +28,6 @@ services:
     image: docker.io/nodered/node-red:{{ komponist.configuration.nodered.version | default('latest') }}
 {% endif %}
     container_name: komponist_nodered
-    configs:
-      - nodered_settings
-    entrypoint: node-red -s /nodered_settings
     logging:
       options:
         max-size: "5m"
@@ -42,6 +39,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - ./nodered/settings.js:/data/settings.js:ro
 {% if komponist.data_persistence | default(false) %}
       - nodered:/data
 
@@ -49,7 +47,3 @@ volumes:
   nodered:
 
 {% endif %}
-
-configs:
-  nodered_settings:
-    file: ./nodered/settings.js
