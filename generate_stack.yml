@@ -39,7 +39,7 @@
       block:
         - name: "(DockerCompose) Validating Docker Compose Services"
           ansible.builtin.command:
-            cmd: docker compose {{ compose_files }} config --quiet
+            cmd: docker compose {{ compose_files }} config --no-interpolate --no-path-resolution --quiet
           args:
             chdir: "{{ komponist.deploy_dir }}"
           vars:
@@ -50,7 +50,11 @@
 
         - name: "(DockerCompose) Generating docker-compose.yml file if all services are valid"
           ansible.builtin.command:
-            cmd: docker compose -p {{ komponist.configuration.project_name | default('komponist') }} {{ compose_files }} config -o docker-compose.yml
+            cmd: >
+              docker compose -p {{ komponist.configuration.project_name | default('komponist') }} {{ compose_files }} config
+                --no-interpolate
+                --no-path-resolution
+                -o docker-compose.yml
           args:
             chdir: "{{ komponist.deploy_dir }}"
           vars:
