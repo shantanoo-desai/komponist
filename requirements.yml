@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+---
+collections:
+  - name: community.docker
+    version: 3.4.8
+  - name: ansible.utils
+    version: 2.10.3

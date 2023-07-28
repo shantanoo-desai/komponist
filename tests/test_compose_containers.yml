@@ -1,0 +1,47 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+---
+- name: Bring the Compose Application up and check if containers exist and are running
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../vars/config.yml"
+
+  tasks:
+    - name: Container Checks
+      block:
+        - name: (Komponist-Docker) Bring the Compose Application up
+          ansible.builtin.command:
+            cmd: docker compose --project-directory="{{ playbook_dir }}/../deploy" up --quiet-pull -d
+          register: compose_up
+          changed_when: compose_up.rc != 0
+
+        - name: (Komponist-Docker) Obtain information about containers
+          community.docker.docker_container_info:
+            name: "{{ komponist.project_name }}_{{ item }}"
+          register: containers_info
+          loop: "{{ komponist.configuration.keys() }}"
+
+        - name: (Komponist-Docker) Check if containers exist
+          ansible.builtin.assert:
+            that: item.exists
+            fail_msg: "FAIL: {{ item.item }} container DOES NOT EXIST."
+            success_msg: "PASS: {{ item.item }} container EXISTS."
+          loop: "{{ containers_info.results }}"
+          loop_control:
+            label: "{{ item.item }}"
+
+        - name: (Komponist-Docker) Check if containers are running
+          ansible.builtin.assert:
+            that: item.container.State.Status == 'running'
+            fail_msg: "FAIL: {{ item.item }} container NOT RUNNING."
+            success_msg: "PASS: {{ item.item }} container RUNNING."
+          loop: "{{ containers_info.results }}"
+          loop_control:
+            label: "{{ item.item }}"
+
+      always:
+        - name: (Komponist-Docker) docker compose down --volumes
+          ansible.builtin.command:
+            cmd: docker compose --project-directory="{{ playbook_dir }}/../deploy" down --volumes
+          register: compose_down
+          changed_when: compose_down.rc != 0
