@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: AGPL-3.0-only
 ---
 - name: Test Content for Mosquitto / Node-RED Generated Files
   hosts: localhost
