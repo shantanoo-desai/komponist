@@ -1,5 +1,5 @@
 ansible
 docker
-urllib3 < 2.0 # Pin this requirement to combat a current incompatibility with docker and urllib3
+urllib3
 jsonschema
 passlib
