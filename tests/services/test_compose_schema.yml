@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+---
 - name: Perform Lookup for {{ item }} File
   ansible.builtin.set_fact:
     compose_service_file: "{{ lookup('ansible.builtin.file', '{{ item }}') | from_yaml }}"

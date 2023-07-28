@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: AGPL-3.0-only
 ---
 - name: Get stats for Mosquitto related configuration files
   ansible.builtin.stat:
