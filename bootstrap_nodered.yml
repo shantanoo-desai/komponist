@@ -1,0 +1,99 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# bootstrap_nodered.yml: Ansible Playbook that installs InfluxDB / Postgres Nodes
+# into running node-red
+---
+- name: Bootstrap Node-RED instance with Database Nodes
+  hosts: localhost
+  vars_files:
+    - vars/config.yml
+    - vars/creds.yml
+
+  module_defaults:
+    ansible.builtin.uri:
+      method: POST
+      headers:
+        Content-Type: application/json
+
+  tasks:
+    - name: Gather Container Facts for Checks
+      community.docker.docker_container_info:
+        name: "{{ komponist.project_name }}_nodered"
+      register: nodered_container_info
+
+    - name: Assert that Node-RED Container is Running
+      ansible.builtin.assert:
+        that: nodered_container_info.container.State.Status == 'running'
+        fail_msg: "FAIL: trying to bootstrap Node-RED container but it is not running."
+        success_msg: "PASS: Node-RED container running."
+
+    - name: Get Node-RED user with Read-Write Permissions
+      ansible.builtin.set_fact:
+        nodered_creds: "{{ item }}"
+      when: "item.permissions is defined and item['permissions'] == '*'"
+      loop: "{{ credentials.nodered.users }}"
+      no_log: true
+
+    - name: Obtain Node-RED Authentication Token
+      ansible.builtin.uri:
+        url: http://localhost/nodered/auth/token
+        body:
+          client_id: node-red-admin
+          grant_type: password
+          scope: "{{ nodered_creds.permissions }}"
+          username: "{{ nodered_creds.username }}"
+          password: "{{ nodered_creds.password }}"
+        body_format: json
+        status_code: 200
+      register: auth_token
+      when: nodered_creds is defined
+
+    - name: Install InfluxDB Node into Node-RED
+      ansible.builtin.uri:
+        url: http://localhost/nodered/nodes
+        headers:
+          Authorization: "{{ auth_token.json.token_type }} {{ auth_token.json.access_token }}"
+        body:
+          module: "node-red-contrib-influxdb"
+        body_format: json
+        status_code: 200, 400
+      when: "'influxdbv1' in komponist.configuration.keys() or 'influxdbv2' in komponist.configuration.keys()"
+
+    - name: Install PostgreSQL Node into Node-RED
+      ansible.builtin.uri:
+        url: http://localhost/nodered/nodes
+        headers:
+          Authorization: "{{ auth_token.json.token_type }} {{ auth_token.json.access_token }}"
+        body:
+          module: "node-red-contrib-postgresql"
+        body_format: json
+        status_code: 200, 400
+      when: "'questdb' in komponist.configuration.keys() or 'timescaledb' in komponist.configuration.keys()"
+      register: node_results
+
+    - name: Revoke Authentication Token
+      ansible.builtin.uri:
+        url: http://localhost/nodered/auth/revoke
+        headers:
+          Authorization: "{{ auth_token.json.token_type }} {{ auth_token.json.access_token }}"
+        body:
+          token: "{{ auth_token.json.access_token }}"
+        body_format: json
+        status_code: 200
