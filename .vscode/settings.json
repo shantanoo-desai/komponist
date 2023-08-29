@@ -1,6 +1,6 @@
 {
     "yaml.schemas": {
-        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook": ["generate-stack.yml", "tests/test_*.yml"],
+        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook": ["playbooks/*.yml", "tests/test_*.yml"],
         "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks": ["tasks/*.yml", "tests/services/*.yml"],
         "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json": ["docker-compose.*.yml", "docker-compose.yml"],
         "https://json.schemastore.org/traefik-v2.json": "traefik.yml",
