@@ -22,8 +22,8 @@
 - name: Komponist Stack Generation Playbook
   hosts: localhost
   vars_files:
-    - "{{ playbook_dir }}/../vars/config.yml"
-    - "{{ playbook_dir }}/../vars/creds.yml"
+    - vars/config.yml
+    - vars/creds.yml
   tasks:
 
     - name: "(KOMPONIST) Generating Directory for Production-Ready Files"

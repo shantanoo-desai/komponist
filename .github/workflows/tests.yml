@@ -41,7 +41,7 @@ jobs:
         run: ansible-galaxy collection install -r requirements.yml
 
       - name: Generate the Default Komponist Stack
-        run: ansible-playbook -vv playbooks/generate_stack.yml
+        run: ansible-playbook -vv generate_stack.yml
       
       - name: Test Integrity of Generated Directories
         run: ansible-playbook tests/test_generated_directories.yml

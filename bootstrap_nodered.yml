@@ -23,8 +23,8 @@
 - name: Bootstrap Node-RED instance with Database Nodes
   hosts: localhost
   vars_files:
-    - "{{ playbook_dir }}/../vars/config.yml"
-    - "{{ playbook_dir }}/../vars/creds.yml"
+    - vars/config.yml
+    - vars/creds.yml
 
   module_defaults:
     ansible.builtin.uri:
