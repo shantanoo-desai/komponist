@@ -3,6 +3,7 @@
         "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook": [
             "generate_stack.yml",
             "export_flow_nodered.yml",
+            "export_nodes_nodered.yml",
             "tests/test_*.yml"
         ],
         "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks": [
