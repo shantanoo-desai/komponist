@@ -1,6 +1,7 @@
 {
     "yaml.schemas": {
         "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook": [
+            "deploy_flow_nodered.yml",
             "generate_stack.yml",
             "export_flow_nodered.yml",
             "export_nodes_nodered.yml",
