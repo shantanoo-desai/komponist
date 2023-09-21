@@ -1,0 +1,122 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Komponist - Generate Your Favourite Compose Stack With the Least Effort
+#
+# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# deploy_flow_nodered.yml: Ansible Playbook that deploys a Node-RED Flow to instance(s)
+---
+- name: Deploy Custom Flow to Node-RED instance(s)
+  hosts: localhost
+  gather_facts: true
+  vars:
+    flow_state: stop
+  vars_files:
+    - vars/config.yml
+    - vars/creds.yml
+  module_defaults:
+    ansible.builtin.uri:
+      method: POST
+      headers:
+        Content-Type: application/json
+
+  tasks:
+    - name: Check for Flow File passed as extra variable
+      ansible.builtin.fail:
+        msg: |
+          Please provide the Flow JSON file to be uploaded on the Node-RED instances:
+
+          SYNTAX:
+
+            ansible-playbook deploy_flow_nodered.yml -e "flow_file=path/to/flow.json" -e "flow_state=start"
+
+            OPTIONS:
+              -e "flow_state=start"       To start the Flow once it is uploaded (DEFAULT: stop)
+              --ask-vault-pass            To Pass Ansible Vault Variables
+              -e "@custom/config.yml"     To Pass Custom Komponist Configuration YAML file
+              -e "@custom/creds.yml"      To Pass Custom Komponist Credentials YAML file
+
+      when: flow_file is not defined
+
+    - name: Check for Existence of Flow File
+      ansible.builtin.stat:
+        path: "{{ flow_file }}"
+      register: flow_file_stat_result
+
+    - name: Cannot Find Flow File
+      ansible.builtin.fail:
+        msg: "Unable to find Flow file to upload: {{ flow_file }}"
+      when: not flow_file_stat_result.stat.exists
+
+    - name: Read Flow File Content
+      ansible.builtin.set_fact:
+        flow_content: "{{ lookup('ansible.builtin.file', flow_file) | from_json }}"
+      when: flow_file_stat_result.stat.exists
+
+    - name: Get Node-RED user with all Privileges
+      ansible.builtin.set_fact:
+        nodered_creds: "{{ item }}"
+      when: "item.permissions is defined and item['permissions'] == '*'"
+      loop: "{{ credentials.nodered.users }}"
+      no_log: true
+
+    - name: Obtain Authentication Token
+      ansible.builtin.uri:
+        url: http://{{ ansible_host }}/nodered/auth/token
+        body:
+          client_id: node-red-admin
+          grant_type: password
+          scope: "{{ nodered_creds.permissions }}"
+          username: "{{ nodered_creds.username }}"
+          password: "{{ nodered_creds.password }}"
+        body_format: json
+        status_code: 200
+      register: auth_token
+      when: nodered_creds is defined
+
+    - name: Upload Flow to Node-RED instance
+      ansible.builtin.uri:
+        url: http://{{ ansible_host }}/nodered/flows
+        headers:
+          Authorization: "{{ auth_token.json.token_type }} {{ auth_token.json.access_token }}"
+          Node-RED-API-Version: v2
+          Node-RED-Deployment-Type: full
+        body: "{{ flow_content }}"
+        body_format: json
+        status_code:
+          - 200
+          - 204
+
+    - name: Set the Flow's Runtime State
+      ansible.builtin.uri:
+        url: http://{{ ansible_host }}/nodered/flows/state
+        headers:
+          Authorization: "{{ auth_token.json.token_type }} {{ auth_token.json.access_token }}"
+        body: |
+          { "state" : "{{ flow_state }}"}
+        body_format: json
+        status_code:
+          - 200
+
+    - name: Revoke Authentication Token
+      ansible.builtin.uri:
+        url: http://{{ ansible_host }}/nodered/auth/revoke
+        headers:
+          Authorization: "{{ auth_token.json.token_type }} {{ auth_token.json.access_token }}"
+        body:
+          token: "{{ auth_token.json.access_token }}"
+        body_format: json
+        status_code: 200
