@@ -22,7 +22,7 @@
 ---
 - name: Export Node-RED Nodes from Node-RED for Offline Installation
   hosts: localhost
-  gather_facts: true
+  gather_facts: false
   vars_files:
     - vars/config.yml
     - vars/creds.yml
@@ -39,6 +39,7 @@
       when: "item.permissions is defined and item['permissions'] == '*'"
       loop: "{{ credentials.nodered.users }}"
       no_log: true
+      tags: [always]
 
     - name: Obtain Authentication Token
       ansible.builtin.uri:
@@ -53,6 +54,7 @@
         status_code: 200
       register: auth_token
       when: nodered_creds is defined
+      tags: [always]
 
     - name: Lookup Nodes from Node-RED instance
       ansible.builtin.set_fact:
@@ -61,14 +63,34 @@
         headers:
           Accept: application/json
           Authorization: "{{ auth_token.json.token_type }} {{ auth_token.json.access_token }}"
+      tags: [always]
+
+    - name: Set external_nodes Fact
+      ansible.builtin.set_fact:
+        external_nodes: "{{ external_nodes + [node_module] }}"
+      vars:
+        external_nodes: []
+        node_module:
+          module: "{{ item.module }}"
+          version: "{{ item.version }}"
+      when: item.module != 'node-red' and node_module not in external_nodes
+      loop: "{{ node_set }}"
+      tags: [always]
+
+    - name: Generate nodes.json File for External Node Modules
+      ansible.builtin.copy:
+        dest: "{{ komponist.deploy_dir }}/nodered/nodes.json"
+        content: "{{ external_nodes | to_nice_json }}"
+        mode: "0640"
+      tags: [always]
 
     - name: External Nodes in Node-RED instance
       ansible.builtin.get_url:
         url: "https://registry.npmjs.org/{{ item.module }}/-/{{ item.module }}-{{ item.version }}.tgz"
         dest: "{{ komponist.deploy_dir }}/nodered/"
         mode: "0640"
-      loop: "{{ node_set }}"
-      when: item.module != 'node-red'
+      loop: "{{ external_nodes }}"
+      tags: [never, offline]
 
     - name: Revoke Authentication Token
       ansible.builtin.uri:
@@ -79,3 +101,4 @@
           token: "{{ auth_token.json.access_token }}"
         body_format: json
         status_code: 200
+      tags: [always]
