@@ -17,8 +17,8 @@
 #   You should have received a copy of the GNU Affero General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-# bootstrap_nodered.yml: Ansible Playbook that installs InfluxDB / Postgres Nodes
-# into running node-red
+# bootstrap_nodered.yml: Ansible Playbook that installs External Nodes
+# into running node-red (either offline or online mode)
 ---
 - name: Bootstrap Node-RED instance with Database Nodes
   hosts: localhost
@@ -37,12 +37,14 @@
       community.docker.docker_container_info:
         name: "{{ komponist.project_name }}_nodered"
       register: nodered_container_info
+      tags: [always]
 
     - name: Assert that Node-RED Container is Running
       ansible.builtin.assert:
         that: nodered_container_info.container.State.Status == 'running'
         fail_msg: "FAIL: trying to bootstrap Node-RED container but it is not running."
         success_msg: "PASS: Node-RED container running."
+      tags: [always]
 
     - name: Get Node-RED user with Read-Write Permissions
       ansible.builtin.set_fact:
@@ -50,6 +52,7 @@
       when: "item.permissions is defined and item['permissions'] == '*'"
       loop: "{{ credentials.nodered.users }}"
       no_log: true
+      tags: [always]
 
     - name: Obtain Node-RED Authentication Token
       ansible.builtin.uri:
@@ -64,29 +67,59 @@
         status_code: 200
       register: auth_token
       when: nodered_creds is defined
+      tags: [always]
 
-    - name: Install InfluxDB Node into Node-RED
+
+    - name: (Online) Read `nodes.json` File for Bootstrapping Node-RED
+      ansible.builtin.set_fact:
+        external_nodes: "{{ lookup('ansible.builtin.file', '{{ komponist.deploy_dir}}/nodered/nodes.json') }}"
+      tags: [online]
+
+    - name: (Online) Bootstrap Node-RED with External Nodes using nodes.json
       ansible.builtin.uri:
         url: http://localhost/nodered/nodes
         headers:
           Authorization: "{{ auth_token.json.token_type }} {{ auth_token.json.access_token }}"
         body:
-          module: "node-red-contrib-influxdb"
+          module: "{{ item.module }}"
+          version: "{{ item.version }}"
         body_format: json
-        status_code: 200, 400
-      when: "'influxdbv1' in komponist.configuration.keys() or 'influxdbv2' in komponist.configuration.keys()"
+        status_code:
+          - 200
+          - 400
+      loop: "{{ external_nodes }}"
+      tags: [online]
 
-    - name: Install PostgreSQL Node into Node-RED
-      ansible.builtin.uri:
-        url: http://localhost/nodered/nodes
-        headers:
-          Authorization: "{{ auth_token.json.token_type }} {{ auth_token.json.access_token }}"
-        body:
-          module: "node-red-contrib-postgresql"
-        body_format: json
-        status_code: 200, 400
-      when: "'questdb' in komponist.configuration.keys() or 'timescaledb' in komponist.configuration.keys()"
-      register: node_results
+    - name: (Offline) Obtain information of External Nodes tarballs
+      ansible.builtin.find:
+        paths: "{{ komponist.deploy_dir }}/nodered/"
+        patterns:
+          - '*.tgz'
+      register: node_tarballs
+      tags: [never, offline]
+
+    - name: Check for existing tarballs
+      ansible.builtin.assert:
+        that: "{{ node_tarballs.files | length != 0 }}"
+        fail_msg: "Cannot find any node tarballs with .tgz suffix in {{ komponist.deploy_dir }}/nodered"
+        success_msg: "Found tarballs for external nodes to upload in {{ komponist.deploy_dir }}/nodered"
+      tags: [never, offline]
+
+    # NOTE: Uploading via uri Module with multipart/form-data body and HTTP POST
+    #       throws unknown errors from node-RED side. Chances are uri module does base64 encoding
+    #       of the tarball which the node-RED backend is unable to decode causing errors.
+    #       Only solution at the moment is to use curl with the command module.
+    - name: (Offline) Bootstap Node-RED with External Nodes via tarballs
+      ansible.builtin.command:  # noqa: command-instead-of-module
+        cmd: >
+          curl -s -XPOST http://localhost/nodered/nodes -H "Content-Type: multipart/form-data" \
+           -H "Authorization: {{ auth_token.json.token_type }} {{ auth_token.json.access_token }}" \
+           -F "tarball=@{{ item.path }};type=application/gzip;filename={{ item.path | basename }}"
+      with_items: "{{ node_tarballs.files }}"
+      register: curl_post_output
+      failed_when: curl_post_output.stdout == 'Unauthorized'
+      changed_when: curl_post_output.stdout != '{"code":"module_already_loaded","message":"Module already loaded"}'
+      tags: [never, offline]
 
     - name: Revoke Authentication Token
       ansible.builtin.uri:
@@ -97,3 +130,4 @@
           token: "{{ auth_token.json.access_token }}"
         body_format: json
         status_code: 200
+      tags: [always]
