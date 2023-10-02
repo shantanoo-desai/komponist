@@ -12,8 +12,8 @@ abstraction. The following are required to make Komponist work:
 
 | Name       | Version    | Purpose                                                           |
 |:-----------|:----------:|:-----------------------------------------------------------------:|
-| `docker`   | `>= 24.0.2`   | Container Runtime where your compose stacks will run              |
-| `docker compose` | `>= 2.20.0` | Docker Compose V2 Plugin for Docker Engine                    |
+| `docker`   | `>= 24.0.5`   | Container Runtime where your compose stacks will run              |
+| `docker compose` | `>= 2.20.3` | Docker Compose V2 Plugin for Docker Engine                    |
 
 Install them on your host accordingly. See [Docker Documentations][1]
 
@@ -135,13 +135,15 @@ docker compose --project-directory=deploy logs -f <service_name>
 | `questdb`    | `http://questdb.localhost`    |
 
 
-## Contributing / Development
+## Contributing / Development / Documentation
 
 Contributions are welcome for additional services by opening feature requests as Issues. Please report
 bugs, erroneous behaviours as Issues.
 
 If you would like to add your own Services / containers to Komponist, refer to the
-[Development Workflow Guide (WIP)][2].
+[Development Workflow Guide][2].
+
+All design decisions, inner workings are available in the [docs][3] directory.
 
 ## Licensing
 
@@ -150,3 +152,4 @@ Komponist is licensed under __Affero GNU Public License v3.0__.
 [0]: https://docs.docker.com/compose/compose-v2/
 [1]: https://docs.docker.com/get-docker/
 [2]: docs/Development.md
+[3]: docs/README.md

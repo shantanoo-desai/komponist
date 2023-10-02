@@ -33,4 +33,15 @@ OR
 
     http://questdb.localhost
 
+## Node-RED Nodes Upload
+
+There is a caveat when it comes to uploading the tarballs offline, where the `uri` Ansible Module
+is unable upload the tarball in a correct manner as the Node-RED API throws `BAD_GZIP` errors. This
+maybe because of an inherent logic of `uri` module dependent on some pre-encoding the tarball with
+Base64 which the Node-RED Admin API is unable to decode and hence cannot extract further on.
+
+This problem is mitigated by using `command` module to perform the bootstrapping via `curl` within
+`bootstrap_nodered.yml` playbook
+
+
 [2]: https://github.com/ansible-collections/community.docker/pull/586
