@@ -2,7 +2,7 @@
 ---
 - name: Bring the Compose Application up and check if containers exist and are running
   hosts: localhost
-  gather_facts: false
+  gather_facts: true
   vars_files:
     - "{{ playbook_dir }}/../vars/config.yml"
 
@@ -11,7 +11,7 @@
       block:
         - name: (Komponist-Docker) Bring the Compose Application up
           ansible.builtin.command:
-            cmd: docker compose --project-directory="{{ playbook_dir }}/../deploy" up --quiet-pull -d
+            cmd: docker compose --project-directory="{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}" up --quiet-pull -d
           register: compose_up
           changed_when: compose_up.rc != 0
 
@@ -42,6 +42,6 @@
       always:
         - name: (Komponist-Docker) docker compose down --volumes
           ansible.builtin.command:
-            cmd: docker compose --project-directory="{{ playbook_dir }}/../deploy" down --volumes
+            cmd: docker compose --project-directory="{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}" down --volumes
           register: compose_down
           changed_when: compose_down.rc != 0

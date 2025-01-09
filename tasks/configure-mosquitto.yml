@@ -19,32 +19,32 @@
 ---
 - name: '(Mosquitto) Creating Deployment Specific Directory'
   ansible.builtin.file:
-    name: "{{ komponist.deploy_dir }}/mosquitto"
+    name: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/mosquitto"
     state: directory
     mode: "0755"
 
 - name: '(Mosquitto) Generating Configuration File for Deployment'
   ansible.builtin.template:
     src: "config/mosquitto/mosquitto.conf.j2"
-    dest: "{{ komponist.deploy_dir }}/mosquitto/mosquitto.conf"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/mosquitto/mosquitto.conf"
+    mode: "0644"
 
 - name: '(Mosquitto) Generating Authentication Users File for Deployment'
   block:
     - name: Generating Users file (as plain-text)
       ansible.builtin.template:
         src: "config/mosquitto/users.j2"
-        dest: "{{ komponist.deploy_dir }}/mosquitto/users"
-        mode: "0755"
+        dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/mosquitto/users"
+        mode: "0644"
 
 - name: '(Mosquitto) Generating Access Control List File for Deployment'
   ansible.builtin.template:
     src: "config/mosquitto/acl.j2"
-    dest: "{{ komponist.deploy_dir }}/mosquitto/acl"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/mosquitto/acl"
+    mode: "0644"
 
 - name: '(Mosquitto) Generating Compose Service File for Deployment'
   ansible.builtin.template:
     src: services/docker-compose.mosquitto.yml.j2
-    dest: "{{ komponist.deploy_dir }}/docker-compose.mosquitto.yml"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/docker-compose.mosquitto.yml"
+    mode: "0644"

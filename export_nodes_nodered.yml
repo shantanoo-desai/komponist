@@ -22,7 +22,7 @@
 ---
 - name: Export Node-RED Nodes from Node-RED for Offline Installation
   hosts: localhost
-  gather_facts: false
+  gather_facts: true
   vars_files:
     - vars/config.yml
     - vars/creds.yml
@@ -79,7 +79,7 @@
 
     - name: Generate nodes.json File for External Node Modules
       ansible.builtin.copy:
-        dest: "{{ komponist.deploy_dir }}/nodered/nodes.json"
+        dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered/nodes.json"
         content: "{{ external_nodes | to_nice_json }}"
         mode: "0640"
       tags: [always]
@@ -87,7 +87,7 @@
     - name: External Nodes in Node-RED instance
       ansible.builtin.get_url:
         url: "https://registry.npmjs.org/{{ item.module }}/-/{{ item.module }}-{{ item.version }}.tgz"
-        dest: "{{ komponist.deploy_dir }}/nodered/"
+        dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered/"
         mode: "0640"
       loop: "{{ external_nodes }}"
       tags: [never, offline]

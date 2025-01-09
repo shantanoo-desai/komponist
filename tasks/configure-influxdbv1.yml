@@ -20,5 +20,5 @@
 - name: '(InfluxDBv1) Generating Compose Service File for Deployment'
   ansible.builtin.template:
     src: services/docker-compose.influxdbv1.yml.j2
-    dest: "{{ komponist.deploy_dir }}/docker-compose.influxdbv1.yml"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/docker-compose.influxdbv1.yml"
+    mode: "0644"

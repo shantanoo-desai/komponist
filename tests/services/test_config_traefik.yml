@@ -2,7 +2,7 @@
 ---
 - name: Get stats for Traefik related configuration files
   ansible.builtin.stat:
-    path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/traefik/{{ item }}"
+    path: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/traefik/{{ item }}"
   register: test_traefik_files_stat
   loop:
     - traefik.yml
@@ -10,7 +10,7 @@
 
 - name: Test if Traefik related configuration files in deploy_dir
   ansible.builtin.assert:
-    that: item.stat.exists and item.stat.mode == '0755'
-    fail_msg: "FAIL: {{ item.item }} DOES NOT exist under {{ komponist.deploy_dir }}/traefik directory"
-    success_msg: "PASS: {{ item.item }} exists under {{ komponist.deploy_dir }}/traefik directory"
+    that: item.stat.exists and item.stat.mode == '0644'
+    fail_msg: "FAIL: {{ item.item }} DOES NOT exist under {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/traefik directory"
+    success_msg: "PASS: {{ item.item }} exists under {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/traefik directory"
   loop: "{{ test_traefik_files_stat.results | map('ansible.utils.keep_keys', ['item', 'exists', 'mode']) }}"

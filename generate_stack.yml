@@ -21,6 +21,7 @@
 ---
 - name: Komponist Stack Generation Playbook
   hosts: localhost
+  gather_facts: true
   vars_files:
     - vars/config.yml
     - vars/creds.yml
@@ -28,7 +29,7 @@
 
     - name: "(KOMPONIST) Generating Directory for Production-Ready Files"
       ansible.builtin.file:
-        name: "{{ komponist.deploy_dir }}"
+        name: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}"
         state: directory
         mode: "0755"
 
@@ -43,7 +44,7 @@
           ansible.builtin.command:
             cmd: docker compose {{ compose_files }} config --no-interpolate --no-path-resolution --quiet
           args:
-            chdir: "{{ komponist.deploy_dir }}"
+            chdir: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}"
           vars:
             compose_files: >-
               {{ komponist.configuration.keys() | map('regex_replace', '^(.*)$', ' -f docker-compose.\1.yml') | join | trim }}
@@ -58,7 +59,7 @@
                 --no-path-resolution
                 -o docker-compose.yml
           args:
-            chdir: "{{ komponist.deploy_dir }}"
+            chdir: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}"
           vars:
             compose_files: >-
               {{ komponist.configuration.keys() | map('regex_replace', '^(.*)$', ' -f docker-compose.\1.yml') | join | trim }}
@@ -67,12 +68,12 @@
         - name: "(KOMPONIST) Update the header for generated docker-compose.yml file"
           ansible.builtin.blockinfile:
             block: "{{ lookup('ansible.builtin.template', 'templates/license_header.txt.j2') }}"
-            path: "{{ komponist.deploy_dir }}/docker-compose.yml"
+            path: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/docker-compose.yml"
             insertbefore: "BOF"
             marker: ""
 
         - name: "(KOMPONIST) Generating the .env file for the Project"
           ansible.builtin.template:
             src: config/komponist.env.j2
-            dest: "{{ komponist.deploy_dir }}/.env"
-            mode: "0755"
+            dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/.env"
+            mode: "0644"

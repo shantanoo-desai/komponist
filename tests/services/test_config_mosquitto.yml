@@ -2,7 +2,7 @@
 ---
 - name: Get stats for Mosquitto related configuration files
   ansible.builtin.stat:
-    path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/mosquitto/{{ item }}"
+    path: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/mosquitto/{{ item }}"
   register: test_mosquitto_files_stat
   loop:
     - acl
@@ -11,9 +11,9 @@
 
 - name: Test if Mosquitto related configuration files exist in deploy_dir
   ansible.builtin.assert:
-    that: item.stat.exists and item.stat.mode == '0755'
-    fail_msg: "FAIL: {{ item.item }} DOES NOT exist in {{ komponist.deploy_dir }}/mosquitto directory"
-    success_msg: "PASS: {{ item.item }}  exists in {{ komponist.deploy_dir }}/mosquitto directory"
+    that: item.stat.exists and item.stat.mode == '0644'
+    fail_msg: "FAIL: {{ item.item }} DOES NOT exist in {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/mosquitto directory"
+    success_msg: "PASS: {{ item.item }}  exists in {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/mosquitto directory"
   loop: "{{ test_mosquitto_files_stat.results | map('ansible.utils.keep_keys', ['item', 'exists', 'mode']) }}"
   loop_control:
     label: "{{ item.item }}"

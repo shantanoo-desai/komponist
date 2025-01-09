@@ -20,5 +20,5 @@
 - name: '(TimescaleDB) Generating Compose Service File for Deployment'
   ansible.builtin.template:
     src: services/docker-compose.timescaledb.yml.j2
-    dest: "{{ komponist.deploy_dir }}/docker-compose.timescaledb.yml"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/docker-compose.timescaledb.yml"
+    mode: "0644"

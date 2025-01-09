@@ -2,11 +2,11 @@
 ---
 - name: Get stats for InfluxDBv1/v2 environment file in dedicated directory under deploy_dir
   ansible.builtin.stat:
-    path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/{{ item }}/{{ item }}.env"
+    path: "{{ playbook_dir }}/../{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/{{ item }}/{{ item }}.env"
   register: test_service_envfile_stat
 
 - name: Test if the InfluxDBv1/v2 environment file in dedicated directory exists under deploy_dir
   ansible.builtin.assert:
     that: test_service_envfile_stat.stat.exists and test_service_envfile_stat.stat.mode == '0755'
-    fail_msg: "FAIL: {{ item }}.env DOES NOT exist in {{ komponist.deploy_dir }}/{{ item }} directory."
-    success_msg: "PASS: {{ item }}.env File exists in {{ komponist.deploy_dir }}/{{ item }} directory."
+    fail_msg: "FAIL: {{ item }}.env DOES NOT exist in {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/{{ item }} directory."
+    success_msg: "PASS: {{ item }}.env File exists in {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/{{ item }} directory."

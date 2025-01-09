@@ -2,11 +2,11 @@
 ---
 - name: Get stats for Node-RED settings file
   ansible.builtin.stat:
-    path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/nodered/settings.js"
+    path: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered/settings.js"
   register: test_nodered_settings_file_stat
 
 - name: Test if settings.js Exists under deploy_dir directory
   ansible.builtin.assert:
-    that: test_nodered_settings_file_stat.stat.exists and test_nodered_settings_file_stat.stat.mode == '0755'
-    fail_msg: "FAIL: settings.js DOES NOT exist under {{ komponist.deploy_dir }}/nodered directory"
-    success_msg: "PASS: settings.js exists under {{ komponist.deploy_dir }}/nodered directory"
+    that: test_nodered_settings_file_stat.stat.exists and test_nodered_settings_file_stat.stat.mode == '0644'
+    fail_msg: "FAIL: settings.js DOES NOT exist under {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered directory"
+    success_msg: "PASS: settings.js exists under {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered directory"

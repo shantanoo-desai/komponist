@@ -7,13 +7,17 @@ on:
 
 jobs:
   lint:
+    name: Ansible Lint
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Lint Ansible Playbooks / Tasks
-        uses: ansible/ansible-lint-action@v6
+        uses: ansible/ansible-lint@main
         with:
-          path: "./"
+          args: ""
+          setup_python: "true"
+          working_directory: ""
+          requirements_file: "requirements.yml"

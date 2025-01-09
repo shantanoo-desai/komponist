@@ -1,18 +1,18 @@
 ---
 - name: '(Telegraf) Creating Deployment Directory'
   ansible.builtin.file:
-    name: "{{ komponist.deploy_dir }}/telegraf"
+    name: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/telegraf"
     state: directory
     mode: "0755"
 
 - name: '(Telegraf) Generating Configuration File'
   ansible.builtin.template:
     src: "config/telegraf/telegraf.conf.j2"
-    dest: "{{ komponist.deploy_dir }}/telegraf/telegraf.conf"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/telegraf/telegraf.conf"
+    mode: "0644"
 
 - name: '(Telegraf) Generating Compose Service File for Deployment'
   ansible.builtin.template:
     src: services/docker-compose.telegraf.yml.j2
-    dest: "{{ komponist.deploy_dir }}/docker-compose.telegraf.yml"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/docker-compose.telegraf.yml"
+    mode: "0644"

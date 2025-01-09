@@ -2,13 +2,13 @@
 ---
 - name: Test Content for Mosquitto / Node-RED Generated Files
   hosts: localhost
-  gather_facts: false
+  gather_facts: true
   vars_files:
     - "{{ playbook_dir }}/../vars/config.yml"
   tasks:
     - name: (Mosquitto) Perform Lookup for Mosquitto Users File
       ansible.builtin.set_fact:
-        mosquitto_users_file: "{{ lookup('ansible.builtin.file', '{{ playbook_dir }}/../{{ komponist.deploy_dir }}/mosquitto/users') }}"
+        mosquitto_users_file: '{{ lookup("ansible.builtin.file", komponist.deploy_dir | default(ansible_user_dir + "/.komponist") + "/mosquitto/users") }}'
 
     - name: (Mosquitto) Assert that plain-text passwords were encrypted by Custom Filter mosquitto_passwd
       ansible.builtin.assert:
@@ -20,7 +20,7 @@
 
     - name: (Node-RED) Perform Lookup for Node-RED settings.js file
       ansible.builtin.set_fact:
-        nodered_settings_file: "{{ lookup('ansible.builtin.file', '{{ playbook_dir }}/../{{ komponist.deploy_dir }}/nodered/settings.js') }}"
+        nodered_settings_file: '{{ lookup("ansible.builtin.file", komponist.deploy_dir | default(ansible_user_dir + "/.komponist") + "/nodered/settings.js") }}'
 
     - name: (Node-RED) Assert that Generated passwords for Node-RED are encrypted
       ansible.builtin.assert:

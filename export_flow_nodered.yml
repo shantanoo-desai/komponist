@@ -82,7 +82,7 @@
 
     - name: Create flows.json into deploy/nodered directory
       ansible.builtin.copy:
-        dest: "{{ komponist.deploy_dir }}/nodered/flows_{{ ansible_date_time.date }}.json"
+        dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered/flows_{{ ansible_date_time.date }}.json"
         content: "{{ final_flow | to_nice_json }}"
         mode: '0644'
 

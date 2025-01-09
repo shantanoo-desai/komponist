@@ -20,5 +20,5 @@
 - name: '(QuestDB) Generating Compose Service File for Deployment'
   ansible.builtin.template:
     src: services/docker-compose.questdb.yml.j2
-    dest: "{{ komponist.deploy_dir }}/docker-compose.questdb.yml"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/docker-compose.questdb.yml"
+    mode: "0644"
