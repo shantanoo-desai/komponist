@@ -19,18 +19,18 @@
 ---
 - name: '(Node-RED) Creating Deployment Specific Directory'
   ansible.builtin.file:
-    name: "{{ komponist.deploy_dir }}/nodered"
+    name: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered"
     state: directory
     mode: "0755"
 
 - name: '(Node-RED) Generating settings.js File for Deployment'
   ansible.builtin.template:
     src: config/nodered/settings.js.j2
-    dest: "{{ komponist.deploy_dir }}/nodered/settings.js"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered/settings.js"
+    mode: "0644"
 
 - name: '(Node-RED) Generating Compose Service File for Deployment'
   ansible.builtin.template:
     src: services/docker-compose.nodered.yml.j2
-    dest: "{{ komponist.deploy_dir }}/docker-compose.nodered.yml"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/docker-compose.nodered.yml"
+    mode: "0644"

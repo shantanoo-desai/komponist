@@ -26,11 +26,12 @@ komponist:
   # Default Value: komponist
   project_name: 'komponist'
 
-  # Parameter: `deploy_dir` (REQUIRED)
+  # Parameter: `deploy_dir` (OPTIONAL)
   # Function: Creates a directory in the dedicated path with the generated
   #           settings files + docker compose files
   # Acceptable Value: Complete Path to where the directory should exist
-  deploy_dir: './deploy'
+  # Default Value: ~/.komponist
+  # deploy_dir: './deploy'
 
   # Parameter: `data_persistence` (OPTIONAL)
   # Function: Let Komponist know if the generated data from containers needs to stored

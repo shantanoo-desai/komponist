@@ -2,11 +2,11 @@
 ---
 - name: Get stats for Grafana Files in dedicated directory under deploy_dir
   ansible.builtin.stat:
-    path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/grafana/provisioning/datasources/datasources.yml"
+    path: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/grafana/provisioning/datasources/datasources.yml"
   register: test_grafana_datasources_stat
 
 - name: Test if the Grafana Datasources File in dedicated directory exists under deploy_dir
   ansible.builtin.assert:
-    that: test_grafana_datasources_stat.stat.exists and test_grafana_datasources_stat.stat.mode == '0755'
-    fail_msg: "FAIL: Datasources File DOES NOT exist in {{ komponist.deploy_dir }}/grafana/provisioning/datasources directory."
-    success_msg: "PASS: Datasources File exists in {{ komponist.deploy_dir }}/grafana/provisioning/datasources directory."
+    that: test_grafana_datasources_stat.stat.exists and test_grafana_datasources_stat.stat.mode == '0644'
+    fail_msg: "FAIL: Datasources File DOES NOT exist in {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/grafana/provisioning/datasources directory."
+    success_msg: "PASS: Datasources File exists in {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/grafana/provisioning/datasources directory."

@@ -19,18 +19,18 @@
 ---
 - name: '(Grafana) Creating Deployment Specific Directory'
   ansible.builtin.file:
-    name: "{{ komponist.deploy_dir }}/grafana/provisioning/datasources"
+    name: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/grafana/provisioning/datasources"
     state: directory
     mode: "0755"
 
 - name: '(Grafana) Generating Datasources File'
   ansible.builtin.template:
     src: config/grafana/provisioning/datasources/datasources.yml.j2
-    dest: "{{ komponist.deploy_dir }}/grafana/provisioning/datasources/datasources.yml"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/grafana/provisioning/datasources/datasources.yml"
+    mode: "0644"
 
 - name: '(Grafana) Generating Compose Service File for Deployment'
   ansible.builtin.template:
     src: services/docker-compose.grafana.yml.j2
-    dest: "{{ komponist.deploy_dir }}/docker-compose.grafana.yml"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/docker-compose.grafana.yml"
+    mode: "0644"

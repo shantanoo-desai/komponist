@@ -19,7 +19,7 @@
 ---
 - name: '(Traefik) Creating Deployment Specific Directory'
   ansible.builtin.file:
-    name: "{{ komponist.deploy_dir }}/traefik/configurations"
+    name: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/traefik/configurations"
     state: directory
     mode: "0755"
 
@@ -27,19 +27,19 @@
 - name: '(Traefik) Generating Traefik Configuration File'
   ansible.builtin.template:
     src: config/traefik/traefik.yml.j2
-    dest: "{{ komponist.deploy_dir }}/traefik/traefik.yml"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/traefik/traefik.yml"
+    mode: "0644"
 
 
 - name: '(Traefik) Generating Dynamic Configuration Files for Traefik'
   ansible.builtin.template:
     src: templates/config/traefik/configurations/dynamic.yml.j2
-    dest: "{{ komponist.deploy_dir }}/traefik/configurations/dynamic.yml"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/traefik/configurations/dynamic.yml"
+    mode: "0644"
 
 
 - name: '(Traefik) Generating Compose Service File for Deployment'
   ansible.builtin.template:
     src: services/docker-compose.traefik.yml.j2
-    dest: "{{ komponist.deploy_dir }}/docker-compose.traefik.yml"
-    mode: "0755"
+    dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/docker-compose.traefik.yml"
+    mode: "0644"

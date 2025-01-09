@@ -11,17 +11,17 @@
   vars_files:
     - "{{ playbook_dir }}/../vars/config.yml"
   hosts: localhost
-  gather_facts: false
+  gather_facts: true
 
   pre_tasks:
     - name: Collect Stat Information for deploy_dir
       ansible.builtin.stat:
-        path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}"
+        path: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}"
       register: test_deploy_dir_state
 
     - name: Collect Stat Information for Services under deploy_dir
       ansible.builtin.stat:
-        path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/{{ item }}"
+        path: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/{{ item }}"
       register: test_deploy_dir_service_state
       loop: "{{ komponist.configuration.keys() }}"
 
@@ -30,14 +30,14 @@
       ansible.builtin.assert:
         that:
           - test_deploy_dir_state.stat.exists and test_deploy_dir_state.stat.isdir
-        fail_msg: "Cannot Find the {{ komponist.deploy_dir }} in the root of the repository."
-        success_msg: "{{ komponist.deploy_dir }} exists in the root of the repository."
+        fail_msg: "Cannot Find the {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }} in the root of the repository."
+        success_msg: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }} exists in the root of the repository."
 
     - name: Test if the subdirectories for each Service exists under deploy_dir
       ansible.builtin.assert:
         that: item.stat.exists and item.stat.isdir and item.stat.mode == '0755'
-        fail_msg: "FAIL: {{ item.item }} does not exist under {{ komponist.deploy_dir }} directory"
-        success_msg: "PASS: {{ item.item }} exist under {{ komponist.deploy_dir }} directory"
+        fail_msg: "FAIL: {{ item.item }} does not exist under {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }} directory"
+        success_msg: "PASS: {{ item.item }} exist under {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }} directory"
         quiet: false
       loop: "{{ test_deploy_dir_service_state.results | map('ansible.utils.keep_keys', ['item', 'exists', 'isdir', 'mode']) }}"
       when: "item.item not in excluded_services"

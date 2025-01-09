@@ -2,11 +2,11 @@
 ---
 - name: Get stats for Telegraf configuration file
   ansible.builtin.stat:
-    path: "{{ playbook_dir }}/../{{ komponist.deploy_dir }}/telegraf/telegraf.conf"
+    path: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/telegraf/telegraf.conf"
   register: test_telegraf_file_stat
 
 - name: Test if Telegraf configuration file in deploy_dir
   ansible.builtin.assert:
-    that: test_telegraf_file_stat.stat.exists and test_telegraf_file_stat.stat.mode == '0755'
-    fail_msg: "FAIL: telegraf.conf DOES NOT exist under {{ komponist.deploy_dir }}/telegraf directory"
-    success_msg: "PASS: telegraf.conf exists under {{ komponist.deploy_dir }}/telegraf directory"
+    that: test_telegraf_file_stat.stat.exists and test_telegraf_file_stat.stat.mode == '0644'
+    fail_msg: "FAIL: telegraf.conf DOES NOT exist under {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/telegraf directory"
+    success_msg: "PASS: telegraf.conf exists under {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/telegraf directory"

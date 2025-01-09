@@ -22,6 +22,7 @@
 ---
 - name: Bootstrap Node-RED instance with Database Nodes
   hosts: localhost
+  gather_facts: true
   vars_files:
     - vars/config.yml
     - vars/creds.yml
@@ -72,7 +73,7 @@
 
     - name: (Online) Read `nodes.json` File for Bootstrapping Node-RED
       ansible.builtin.set_fact:
-        external_nodes: "{{ lookup('ansible.builtin.file', '{{ komponist.deploy_dir}}/nodered/nodes.json') }}"
+        external_nodes: "{{ lookup('ansible.builtin.file', '{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered/nodes.json') }}"
       tags: [online]
 
     - name: (Online) Bootstrap Node-RED with External Nodes using nodes.json
@@ -92,7 +93,7 @@
 
     - name: (Offline) Obtain information of External Nodes tarballs
       ansible.builtin.find:
-        paths: "{{ komponist.deploy_dir }}/nodered/"
+        paths: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered/"
         patterns:
           - '*.tgz'
       register: node_tarballs
@@ -101,8 +102,8 @@
     - name: Check for existing tarballs
       ansible.builtin.assert:
         that: "{{ node_tarballs.files | length != 0 }}"
-        fail_msg: "Cannot find any node tarballs with .tgz suffix in {{ komponist.deploy_dir }}/nodered"
-        success_msg: "Found tarballs for external nodes to upload in {{ komponist.deploy_dir }}/nodered"
+        fail_msg: "Cannot find any node tarballs with .tgz suffix in {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered"
+        success_msg: "Found tarballs for external nodes to upload in {{ komponist.deploy_dir  | default(ansible_user_dir + '/.komponist') }}/nodered"
       tags: [never, offline]
 
     # NOTE: Uploading via uri Module with multipart/form-data body and HTTP POST
