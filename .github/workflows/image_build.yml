@@ -21,7 +21,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     steps:
       - name: Checkout Codebase
         uses: actions/checkout@v3
@@ -34,7 +34,7 @@ jobs:
 
       - name: Setup QEMU for Multi-Arch images
         uses: docker/setup-qemu-action@v2
-      
+
       - name: setup Docker Buildx for Multi-Arch images
         uses: docker/setup-buildx-action@v2
 
@@ -44,7 +44,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Build and Push Image
         uses: docker/build-push-action@v4
         with:

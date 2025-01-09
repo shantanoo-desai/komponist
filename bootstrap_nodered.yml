@@ -73,7 +73,7 @@
 
     - name: (Online) Read `nodes.json` File for Bootstrapping Node-RED
       ansible.builtin.set_fact:
-        external_nodes: "{{ lookup('ansible.builtin.file', '{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered/nodes.json') }}"
+        external_nodes: '{{ lookup("ansible.builtin.file", komponist.deploy_dir | default(ansible_user_dir + "/.komponist") + "/nodered/nodes.json") }}'
       tags: [online]
 
     - name: (Online) Bootstrap Node-RED with External Nodes using nodes.json

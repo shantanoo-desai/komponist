@@ -80,7 +80,7 @@
     - name: Generate nodes.json File for External Node Modules
       ansible.builtin.copy:
         dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/nodered/nodes.json"
-        content: "{{ external_nodes | to_nice_jsotrue
+        content: "{{ external_nodes | to_nice_json }}"
         mode: "0640"
       tags: [always]
 
