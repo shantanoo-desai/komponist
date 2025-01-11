@@ -2,7 +2,7 @@
 #
 # Komponist - Generate Your Favourite Compose Stack With the Least Effort
 #
-# Copyright (C) 2023  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
+# Copyright (C) 2025  Shantanoo "Shan" Desai <sdes.softdev@gmail.com>
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU Affero General Public License as published
@@ -38,42 +38,29 @@
       with_items:
         - "{{ komponist.configuration.keys() }}"
 
-    - name: "(KOMPONIST) Validation and Generation of docker-compose.yml"
-      block:
-        - name: "(DockerCompose) Validating Docker Compose Services"
-          ansible.builtin.command:
-            cmd: docker compose {{ compose_files }} config --no-interpolate --no-path-resolution --quiet
-          args:
-            chdir: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}"
-          vars:
-            compose_files: >-
-              {{ komponist.configuration.keys() | map('regex_replace', '^(.*)$', ' -f docker-compose.\1.yml') | join | trim }}
-          register: docker_compose_validity
-          changed_when: docker_compose_validity.rc != 0
+    - name: "(KOMPONIST) Generating Entrypoint compose.yml file from Templates"
+      ansible.builtin.template:
+        src: templates/services/compose.yml.j2
+        dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/compose.yml"
+        mode: "0644"
 
-        - name: "(DockerCompose) Generating docker-compose.yml file if all services are valid"
-          ansible.builtin.command:
-            cmd: >
-              docker compose -p {{ komponist.configuration.project_name | default('komponist') }} {{ compose_files }} config
-                --no-interpolate
-                --no-path-resolution
-                -o docker-compose.yml
-          args:
-            chdir: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}"
-          vars:
-            compose_files: >-
-              {{ komponist.configuration.keys() | map('regex_replace', '^(.*)$', ' -f docker-compose.\1.yml') | join | trim }}
-          changed_when: docker_compose_validity.rc != 0
+    - name: "(KOMPONIST) Validating Docker Compose Services"
+      ansible.builtin.command:
+        cmd: docker compose config --no-interpolate --no-path-resolution --quiet
+      args:
+        chdir: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}"
+      register: docker_compose_validity
+      changed_when: docker_compose_validity.rc != 0
 
-        - name: "(KOMPONIST) Update the header for generated docker-compose.yml file"
-          ansible.builtin.blockinfile:
-            block: "{{ lookup('ansible.builtin.template', 'templates/license_header.txt.j2') }}"
-            path: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/docker-compose.yml"
-            insertbefore: "BOF"
-            marker: ""
+    - name: "(KOMPONIST) Update the header for generated docker-compose.yml file"
+      ansible.builtin.blockinfile:
+        block: "{{ lookup('ansible.builtin.template', 'templates/license_header.txt.j2') }}"
+        path: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/compose.yml"
+        insertbefore: "BOF"
+        marker: ""
 
-        - name: "(KOMPONIST) Generating the .env file for the Project"
-          ansible.builtin.template:
-            src: config/komponist.env.j2
-            dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/.env"
-            mode: "0644"
+    - name: "(KOMPONIST) Generating the .env file for the Project"
+      ansible.builtin.template:
+        src: config/komponist.env.j2
+        dest: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/.env"
+        mode: "0644"
