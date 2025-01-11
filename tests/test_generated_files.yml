@@ -36,18 +36,18 @@
           loop_control:
             label: "{{ item.item }}"
 
-    - name: Check for Deployment-Ready docker-compose.yml File
+    - name: Check for Deployment-Ready compose.yml File
       block:
-        - name: Get stats for Deployment-Ready docker-compose.yml file
+        - name: Get stats for Deployment-Ready compose.yml file
           ansible.builtin.stat:
-            path: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/docker-compose.yml"
+            path: "{{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }}/compose.yml"
           register: test_compose_deployment_file_stat
 
-        - name: Check if docker-compose.yml File exist
+        - name: Check if compose.yml File exist
           ansible.builtin.assert:
             that: test_compose_deployment_file_stat.stat.exists and test_compose_deployment_file_stat.stat.mode == '0644'
-            fail_msg: "FAIL: docker-compose.yml DOES NOT exist in {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }} directory."
-            success_msg: "PASS: docker-compose.yml File exists in {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }} directory."
+            fail_msg: "FAIL: compose.yml DOES NOT exist in {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }} directory."
+            success_msg: "PASS: compose.yml File exists in {{ komponist.deploy_dir | default(ansible_user_dir + '/.komponist') }} directory."
 
     - name: Check Mosquitto MQTT Generated Files in deploy_dir
       ansible.builtin.include_tasks: "{{ playbook_dir }}/services/test_config_mosquitto.yml"
