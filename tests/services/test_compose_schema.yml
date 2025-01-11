@@ -3,7 +3,7 @@
 - name: Perform Lookup for {{ item }} File
   ansible.builtin.set_fact:
     compose_service_file: "{{ lookup('ansible.builtin.file', '{{ item }}') | from_yaml }}"
-    compose_spec_schema: "{{ lookup('ansible.builtin.file', '{{ playbook_dir }}/schemas/compose-spec.json') }}"
+    compose_spec_schema: "{{ lookup('ansible.builtin.file', '{{ playbook_dir }}/schemas/compose-spec-v2.json') }}"
 
 - name: Perform Validation for Compose File with compose-spec JSONSchema
   ansible.builtin.set_fact:
